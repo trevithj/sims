@@ -1,0 +1,24 @@
+{
+  "name": "sims",
+  "version": "1.0.0",
+  "description": "Project for web-based simulation apps",
+  "main": "simpleServer.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trevithj/sims.git"
+  },
+  "author": "Trevedhek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trevithj/sims/issues"
+  },
+  "homepage": "https://github.com/trevithj/sims#readme"
+}
