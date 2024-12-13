@@ -1,0 +1,114 @@
+<svg viewBox="0 50 500 500" width="400" xmlns="http://www.w3.org/2000/svg">
+<style>
+.op {
+    stroke: blue;
+    fill: white;
+    fill-opacity: 0.7;
+}
+.item {
+    stroke: blue;
+    transform: translate(-10px, -10px);
+}
+.store {
+    fill: white;
+    stroke: black;
+    transform: translate(-30px, -20px);
+}
+.worker {
+    r: 25;
+    stroke: black;
+    fill: red;
+}
+
+@keyframes pulse {
+    0% { r: 25) }
+    50% { r: 15 }
+    100% { r: 25 }
+}
+.busy {
+    animation: pulse 800ms linear infinite;
+}
+
+@keyframes move1 {
+    0% { y: 300 }
+    100% { y: 100 }
+}
+.move1 {
+    animation: move1 2000ms linear infinite;
+}
+@keyframes move2 {
+    0% { y: 500 }
+    100% { y: 300 }
+}
+.move2 {
+    animation: move2 500ms linear infinite;
+}
+
+.swap {
+    transition: cx 15s linear 0s;
+    fill: blue;
+}
+</style>
+  <defs>
+    <circle id="op" r="30" fill="none" class="op" />
+    <rect id="store" width="60" height="40" class="store" />
+    <rect id="item" width="20" height="20" class="item" />
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="800" fill="#eee"/>
+
+  <g class="paths">
+    <path d="M100,500 V100 M400,500 V100" stroke="black" />
+  </g>
+
+  <g class="stores">
+    <use id="item-a1" href="#item" x="100" y="300" />
+    <use id="item-b1" href="#item" x="400" y="300" />
+    <use id="item-a0" href="#item" x="100" y="500" />
+    <use id="item-b0" href="#item" x="400" y="500" />
+
+    <g id="fg-a">
+        <use href="#store" x="100" y="100"/>
+        <text dx="-10" x="100" y="100">0</text>
+    </g>
+    <g id="fg-b">
+        <use href="#store" x="400" y="100"/>
+        <text dx="-10" x="400" y="100">0</text>
+    </g>
+
+    <g id="wip-a">
+        <use href="#store" x="100" y="300"/>
+        <text dx="-10" x="100" y="300">0</text>
+    </g>
+
+    <g id="wip-b">
+        <use href="#store" x="400" y="300"/>
+        <text dx="-10" x="400" y="300">0</text>
+    </g>
+
+    <g id="rm-a">
+        <use href="#store" x="100" y="500"/>
+        <text dx="-10" x="100" y="500">0</text>
+    </g>
+
+    <g id="rm-b">
+        <use href="#store" x="400" y="500"/>
+        <text dx="-10" x="400" y="500">0</text>
+    </g>
+  </g>
+
+  <g class="ops">
+    <use href="#op" x="100" y="200"/>
+    <use href="#op" x="400" y="200"/>
+    <use href="#op" x="100" y="400"/>
+    <use href="#op" x="400" y="400"/>
+  </g>
+  <g class="active">
+    <circle id="worker-a1" cx="100" cy="200" class="worker" />
+    <circle id="worker-b1" cx="400" cy="200" class="worker" />
+    <circle id="worker-x0" cx="100" cy="400" class="worker swap" />
+  </g>
+  <text x="135" y="500">RM A</text>
+  <text x="325" y="500">RM B</text>
+  <text x="170" y="100">Finished goods ($30 ea)</text>
+</svg>
