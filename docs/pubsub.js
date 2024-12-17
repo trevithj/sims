@@ -2,13 +2,23 @@
 // The subscribe function returns an unsubscribe fn.
 const subscriberMap = {};
 
-export function publish(subject, message) {
+function doPublish(subject, message) {
     const subscribers = subscriberMap[subject] || [];
     subscribers.forEach(subFn => {
         if (subFn && typeof subFn === "function") {
             subFn(message);
         }
     })
+}
+
+export function publish(subject, message, runImmediately) {
+    if (runImmediately) {
+        doPublish(subject, message);
+    } else {
+        setTimeout(() => {
+            doPublish(subject, message);
+        }, 0); // end publish fn immediately. Leave execution to next execution block.
+    }
 }
 
 export function subscribe(subject, subFn) {

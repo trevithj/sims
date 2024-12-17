@@ -10,9 +10,9 @@ const display = (data, element) => () => {
         'Less expenses:',
         `  Daily (due): $4000`,
         `  RM cost:     $${expenses}`,
-        '========================',
+        '  ==================',
         `  Net profit   $${revenue - 4000 - expenses}`,
-        '========================',
+        '  ==================',
         data.message
     ].join("\r\n");
 }
