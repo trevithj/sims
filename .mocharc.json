@@ -9,7 +9,7 @@
     "slow": "75",
     "timeout": "2000",
     "ui": "bdd",
-    "watch": false,
+    // "watch": false,
     "watch-files": ["docs/**/*.js", "test/**/*.js"],
-    "watch-ignore": ["lib/vendor"]
+    "watch-ignore": ["**/node_modules", "**/.git"]
 }

@@ -5,11 +5,11 @@
   "main": "simpleServer.js",
   "type": "module",
   "directories": {
-    "doc": "docs",
-    "test": "tests"
+    "doc": "docs"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:watch": "mocha --node-option=watch"
   },
   "repository": {
     "type": "git",
