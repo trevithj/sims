@@ -93,11 +93,11 @@
   </g>
 
   <g class="stores">
-    <use id="item-a" href="#item" x="100" y="500" />
-    <use id="item-b" href="#item" x="100" y="300" />
-    <use id="item-c" href="#item" x="100" y="100" />
-    <use id="item-d" href="#item" x="400" y="100" />
-    <use id="item-e" href="#item" x="400" y="300" />
+    <use id="item-ra" href="#item" x="100" y="500" />
+    <use id="item-ab" href="#item" x="100" y="300" />
+    <use id="item-bc" href="#item" x="100" y="100" />
+    <use id="item-cd" href="#item" x="400" y="100" />
+    <use id="item-df" href="#item" x="400" y="300" />
 
     <g id="rm">
         <use href="#store" x="100" y="500"/>
