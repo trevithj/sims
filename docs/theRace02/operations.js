@@ -1,5 +1,5 @@
 import {publish, subscribe} from "../pubsub.js";
-import {getItem, getStore, getWorker} from "./selectors.js";
+// import {getItem} from "./selectors.js";
 
 /*  OPS
 operation-id: source-store-id, target-store-id, item-id, worker-id
@@ -21,30 +21,34 @@ function updateStore(store, delta) {
     return true;
 }
 
-export function makeOp(opId) {
+export function makeOp(opId, {getWorker, getStore}) {
     const defStr = opsDefinitions[opId];
     if (!defStr) throw Error("Unknown opId");
     const [srcId, tgtId, itemId, workerId] = defStr.split("|");
     const src = getStore(srcId);
     const tgt = getStore(tgtId);
-    const item = getItem(itemId);
+    // const item = getItem(itemId);
     let worker = getWorker(workerId);
     let status = "IDLE";
 
     subscribe("WorkerAllocated", d => {
         if (d.oldOpId === opId) {
+            worker.setStatus("idle");
             status = "IDLE";
-            worker = null;
         } else if (d.newOpId === opId) {
             status = "SETUP";
             worker = getWorker(workerId);
+            worker.setStatus("idle");
         }
     });
     const checkSOH = () => {
         console.log("checking", src);
-        if (src.qty < 1) status = "WAITING";
-        else {
+        if (src.qty < 1) {
+            status = "WAITING";
+            worker.setStatus("idle");
+        } else {
             status = "READY";
+            worker.setStatus("busy");
             runItemAnimation();
         }
     }
@@ -67,7 +71,7 @@ export function makeOp(opId) {
     }
 
     subscribe("SimStarted", () => {
-        if(worker) {
+        if (worker) {
             checkSOH();
         }
     })
@@ -79,6 +83,7 @@ export function makeOp(opId) {
         setWorker: element => {
             worker = element;
             if (isReady()) {
+                worker?.setStatus("busy");
                 publish("TODO: animateItem", itemId);
             }
         },
@@ -91,7 +96,11 @@ export function makeOp(opId) {
     }
 }
 
-export const getOpsMap = () => new Map(OPS.map(key => {
-    const value = makeOp(key);
-    return [key, value];
-}));
+export const getOpsMap = (workersMap, storesMap) => {
+    const getWorker = id => workersMap.get(id);
+    const getStore = id => storesMap.get(id);
+    return new Map(OPS.map(key => {
+        const value = makeOp(key, {getWorker, getStore});
+        return [key, value];
+    }));
+}
