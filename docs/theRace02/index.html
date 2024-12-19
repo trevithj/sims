@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>The Race 02 example</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <style type="text/css" media="screen">
+        .info {
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 420px auto;
+        }
+        .cell {
+            height: 450px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid">
+        <div class="cell">
+            <div class="theViz">
+            </div>
+            <div class="controls">
+                <button>Buy RM x5</button>
+                <button>Buy RM x1</button>
+                <button>Swap Jobs</button>
+                <button>START</button>
+            </div>
+        </div>
+        <div class="info"></div>
+    </div>
+    <hr />
+    <h3>The purpose of the simulation:</h3>
+    <p>You have eight hours to produce as much product as possible without running out of cash.</p>
+    <p>The operation has five processes (circles) and six stores (rectangles).
+    Each process moves units of work from one store to the next. Four workers (three red and one blue) operate the processes.</p>
+    <p>The bottom left store is raw material (RM). RM costs $50 per unit.
+    The bottom right store is the finished goods, which sell for $300 each.
+    Purchases and sales happen immediately.</p>
+    <p>Expenses of $4000 are due to be paid at 08:00.
+    You start with $1000 cash, so you need to make at least another $3000 over RM costs.</p>
+    <p>The dedicated red workers each take 10 minutes to process one unit.
+    The blue worker takes only 1 minute per unit, but has two processes to operate.
+    It takes 60 minutes for the blue worker to change jobs.</p>
+    <p>Your task is to purchase RM as required, and to decide when the blue worker should switch between its two processes. Enjoy!</p>
+</body>
+<script src="./main.js" type="module"></script>
+
+</html>

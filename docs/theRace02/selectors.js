@@ -5,7 +5,6 @@ export function getStore(storeId) {
     // Mock for node tests
     if (!viz) return { qty: 10, txt: { textContent: "10" }};
     const grp = viz.querySelector(`g#${storeId}`);
-    console.log(storeId, grp);
     const txt = grp.querySelector("text");
     return {
         get qty() { return parseInt(txt.textContent); },

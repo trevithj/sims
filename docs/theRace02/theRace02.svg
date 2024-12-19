@@ -28,45 +28,6 @@
 .busy {
     animation: pulse 1000ms linear infinite;
 }
-
-@keyframes moveA {
-    0% { y: 500 }
-    100% { y: 300 }
-}
-.moveA {
-    animation: moveA 5000ms linear infinite;
-}
-
-@keyframes moveB {
-    0% { y: 300 }
-    100% { y: 100 }
-}
-.moveB {
-    animation: moveB 500ms linear infinite;
-}
-@keyframes moveC {
-    0% { x: 100 }
-    100% { x: 400 }
-}
-.moveC {
-    animation: moveC 5000ms linear infinite;
-}
-@keyframes moveD {
-    0% { y: 100 }
-    100% { y: 300 }
-}
-.moveD {
-    animation: moveD 500ms linear infinite;
-}
-
-@keyframes moveE {
-    0% { y: 300 }
-    100% { y: 500 }
-}
-.moveE {
-    animation: moveE 2000ms linear infinite;
-}
-
 .swap {
     transition: cx 30s linear 0s;
     fill: url(#blue-radial);
@@ -92,12 +53,14 @@
     <path d="M100,500 V100 M400,500 V100 M100,100 H400" stroke="black" />
   </g>
 
-  <g class="stores">
+  <g class="items">
     <use id="item-ra" href="#item" x="100" y="500" />
     <use id="item-ab" href="#item" x="100" y="300" />
     <use id="item-bc" href="#item" x="100" y="100" />
     <use id="item-cd" href="#item" x="400" y="100" />
     <use id="item-df" href="#item" x="400" y="300" />
+  </g>
+  <g class="stores">
 
     <g id="rm">
         <use href="#store" x="100" y="500"/>
@@ -140,10 +103,10 @@
   </g>
   <g class="active">
     <circle id="worker-r1" cx="100" cy="400" class="worker" />
-    <circle id="worker-r2" cx="400" cy="400" class="worker" />
-    <circle id="worker-r3" cx="250" cy="100" class="worker" />
+    <circle id="worker-r2" cx="250" cy="100" class="worker" />
+    <circle id="worker-r3" cx="400" cy="400" class="worker" />
     <circle id="worker-b1" cx="100" cy="200" class="worker swap" />
   </g>
   <text x="110" y="475">Raw Material</text>
-  <text x="290" y="475">Finished Goods</text>
+  <text x="280" y="475">Finished Goods</text>
 </svg>

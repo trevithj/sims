@@ -1,15 +1,14 @@
 import {publish, subscribe} from "../pubsub.js";
-// import {getItem} from "./selectors.js";
 
 /*  OPS
 operation-id: source-store-id, target-store-id, item-id, worker-id
 */
 const opsDefinitions = {
-    "op-ra": "rm|wip-a|a|r1",
-    "op-ab": "wip-a|wip-b|b|b1",
-    "op-bc": "wip-b|wip-c|c|r2",
-    "op-cd": "wip-c|wip-d|d|",
-    "op-df": "wip-d|fg|e|r3"
+    "op-ra": "rm|wip-a|r1|a",
+    "op-ab": "wip-a|wip-b|b1|b",
+    "op-bc": "wip-b|wip-c|r2|c",
+    "op-cd": "wip-c|wip-d|b1|d|",
+    "op-df": "wip-d|fg|r3|e"
 }
 
 export const OPS = Object.keys(opsDefinitions);
@@ -24,69 +23,14 @@ function updateStore(store, delta) {
 export function makeOp(opId, {getWorker, getStore}) {
     const defStr = opsDefinitions[opId];
     if (!defStr) throw Error("Unknown opId");
-    const [srcId, tgtId, itemId, workerId] = defStr.split("|");
+    const [srcId, tgtId, workerId] = defStr.split("|");
     const src = getStore(srcId);
     const tgt = getStore(tgtId);
-    // const item = getItem(itemId);
-    let worker = getWorker(workerId);
-    let status = "IDLE";
+    let worker = null;
 
-    subscribe("WorkerAllocated", d => {
-        if (d.oldOpId === opId) {
-            worker.setStatus("idle");
-            status = "IDLE";
-        } else if (d.newOpId === opId) {
-            status = "SETUP";
-            worker = getWorker(workerId);
-            worker.setStatus("idle");
-        }
-    });
-    const checkSOH = () => {
-        console.log("checking", src);
-        if (src.qty < 1) {
-            status = "WAITING";
-            worker.setStatus("idle");
-        } else {
-            status = "READY";
-            worker.setStatus("busy");
-            runItemAnimation();
-        }
-    }
-    subscribe("SetupDone", d => {
-        if (d.opId !== opId) return;
-        checkSOH();
-    })
-    subscribe("StoreUpdated", ({storeId}) => {
-        if (storeId !== srcId) return;
-        if (status !== "WAITING") return;
-        checkSOH();
-    });
-    const isReady = () => {
-        if (!worker) return false;
-        if (src.qty < 1) return false;
-        return true;
-    }
-    const runItemAnimation = () => {
-        console.log("TODO: run item animation");
-    }
-
-    subscribe("SimStarted", () => {
-        if (worker) {
-            checkSOH();
-        }
-    })
-
-    return {
-        get status() {
-            return status;
-        },
-        setWorker: element => {
-            worker = element;
-            if (isReady()) {
-                worker?.setStatus("busy");
-                publish("TODO: animateItem", itemId);
-            }
-        },
+    const theOp = {
+        opId,
+        status: "IDLE",
         getStock: (qty = 1) => {
             return updateStore(src, -qty) ? qty : 0;
         },
@@ -94,6 +38,59 @@ export function makeOp(opId, {getWorker, getStore}) {
             return updateStore(tgt, qty);
         }
     }
+    subscribe("WorkerAllocated", d => {
+        if (`op-${d.oldJob}` === opId) {
+            worker.setStatus("idle");
+            worker = null;
+            theOp.status = "DEALLOCATED";
+            publish("OpDeallocated", opId);
+        } else if (`op-${d.newJob}` === opId) {
+            theOp.status = "SETUP";
+            worker = getWorker(d.workerId);
+            worker.setStatus("idle");
+        }
+    });
+    const checkSOH = () => {
+        if (src.qty < 1) {
+            theOp.status = "WAITING";
+            worker.setStatus("idle");
+        } else {
+            src.update(-1);
+            theOp.status = "READY";
+            worker.setStatus("busy");
+            publish("OpProcessStarted", opId);
+        }
+    }
+    subscribe("OpProcessDone", id => {
+        if (id !== opId) return;
+        tgt.update(1);
+        checkSOH();
+    })
+    subscribe("SetupDone", d => {
+        if (d.opId !== opId) return;
+        theOp.status = "WAITING";
+        worker = getWorker(workerId);
+        checkSOH();
+    })
+    subscribe("StoreUpdated", ({storeId}) => {
+        if (storeId !== srcId) return;
+        if (theOp.status !== "WAITING") return;
+        checkSOH();
+    });
+
+    subscribe("SimStarted", () => {
+        if(opId !=="op-cd") worker = getWorker(workerId);
+        if (worker) {
+            checkSOH();
+        }
+    })
+    subscribe("SimFinished", () => {
+        if (worker) {
+            worker.setStatus("idle");
+        }
+    })
+
+    return theOp;
 }
 
 export const getOpsMap = (workersMap, storesMap) => {

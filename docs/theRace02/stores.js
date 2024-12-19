@@ -6,7 +6,6 @@ function getTextElement(storeId) {
     // Mock for node tests
     if (!viz) return { textContent: "10" };
     const grp = viz.querySelector(`g#${storeId}`);
-    if(!grp) console.log(`g#${storeId}`);
     return grp.querySelector("text");
 }
 function getQty(textElement, delta = 0) {
@@ -24,10 +23,10 @@ export function makeStore(storeId, vals = {}) {
         ...vals,
         storeId,
         get qty() { return getQty(txt); },
-        update(n) {
-            const qty = getQty(txt, n);
+        update(delta) {
+            const qty = getQty(txt, delta);
             txt.textContent = qty;
-            publish("StoreUpdated", { storeId, qty });
+            publish("StoreUpdated", { storeId, qty, delta });
         },
     });
 }

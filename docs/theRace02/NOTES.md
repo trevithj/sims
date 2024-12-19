@@ -50,7 +50,7 @@ Emits:
 
 ### Worker:
 Receives:
-- WorkerAllocated
+- WorkerReallocated
 Emits:
 - OpDeallocated (todo)
 - OpAllocated (aka SetupDone)
@@ -58,5 +58,15 @@ Emits:
 ### Item
 Receives:
 - OpDeallocated (todo)
+- OpProcessStarted (todo)
 Emits:
 - OpProcessDone
+
+### Operation
+Receives:
+- StoreUpdated
+- OpDeallocated
+- OpAllocated
+- OpProcessDone
+Emits
+- OpProcessStared
