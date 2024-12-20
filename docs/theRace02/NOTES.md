@@ -40,10 +40,44 @@ WAITING
 ## TODOS
 [x] get a spec file to run assertions in `node` against browser-side code. Mod code inline to return testable mocks when referencing any broser-specific behavious (eg, `querySelector`, `document` etc))
 [x] move to greater use of publish/subscribe, for easier testing.
-[ ] add a high-level event-component design.
-[ ] add spec for some sort of `setWorker` function.
+[x] add a high-level event-component design.
 
 ## Events
+### Output
+Emits:
+- SimFinished
+Receives:
+- StoreUpdated
+
+### Items
+Emits:
+- OpProcessDone
+Receives:
+- OpProcessStarted (todo)
+- OpDeallocated (todo)
+- SimFinished
+
+### Main
+Emits:
+- InitDone
+- WorkerReallocated
+- SetupDone
+- SimStarted
+Receives:
+- SimFinished
+- InitDone
+
+### Operations
+Emits
+- OpDeallocated
+- OpProcessStared
+Receives:
+- WorkerReallocated
+- OpProcessDone
+- SetupDone
+- StoreUpdated
+- SimStarted
+
 ### Store
 Emits:
 - StoreUpdated (in response to `store.update()` invokation.
@@ -51,22 +85,5 @@ Emits:
 ### Worker:
 Receives:
 - WorkerReallocated
-Emits:
-- OpDeallocated (todo)
-- OpAllocated (aka SetupDone)
+- SimFinished
 
-### Item
-Receives:
-- OpDeallocated (todo)
-- OpProcessStarted (todo)
-Emits:
-- OpProcessDone
-
-### Operation
-Receives:
-- StoreUpdated
-- OpDeallocated
-- OpAllocated
-- OpProcessDone
-Emits
-- OpProcessStared

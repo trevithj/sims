@@ -16,11 +16,15 @@ describe("makeOp", function() {
         assert.equal(theOp.getStock(2), 2, "Not getting stock");
         
         assert.equal(theOp.status,"IDLE","Wrong initial status");
-        publish("WorkerAllocated", {workerId: "r1", newJob: "ra" }, true);
+
+        // Allocate work to this op
+        publish("WorkerReallocated", {workerId: "r1", newJob: "ra" }, true);
         assert.equal(theOp.status,"SETUP");
+
+        // Worker is ready to perform the op
         publish("SetupDone", {workerId: "r1", opId: "op-ra" }, true);
         assert.equal(theOp.status,"READY");
-        publish("WorkerAllocated", {workerId: "r1", oldJob: "ra" }, true);
+        publish("WorkerReallocated", {workerId: "r1", oldJob: "ra" }, true);
         assert.equal(theOp.status,"DEALLOCATED");
     })
 });

@@ -1,9 +1,12 @@
 import {publish, subscribe} from "../pubsub.js";
 
-const display = (data, element) => () => {
-    const { revenue, expenses } = data;
+const display = (vals, element) => {
+    const time = vals.dt.toTimeString().substring(0, 5);
+    const revenue = vals.fgSold * 300;
+    const expenses = vals.rmBought * 50;
+
     element.textContent = [
-        `Time:  ${data.time}  Cash: $${data.cash}.`,
+        `Time:  ${time}  Cash: $${vals.cash}.`,
         "",
         'Revenue:',
         `  Sales:       $${revenue}`,
@@ -13,11 +16,11 @@ const display = (data, element) => () => {
         '  ==================',
         `  Net profit   $${revenue - 4000 - expenses}`,
         '  ==================',
-        data.message
+        vals.message
     ].join("\r\n");
 }
 
-export function getData(initialCash = 1000, element) {
+export function makeOutput(initialCash = 1000, element) {
     const dt = new Date("2000-01-01T00:00");
     const refTime = dt.getTime();
     const vals = {
@@ -25,6 +28,7 @@ export function getData(initialCash = 1000, element) {
         ticks: 0,
         rmBought: 0,
         fgSold: 0,
+        dt,
         message: null
     }
     function updateCash(d) {
@@ -44,13 +48,7 @@ export function getData(initialCash = 1000, element) {
         }
     });
 
-    const DATA = {
-        get time() { return dt.toTimeString().substring(0, 5); },
-        get cash() {return vals.cash;},
-        get revenue() {return vals.fgSold * 300 },
-        get expenses() {return vals.rmBought * 50 },
-        updateCash,
-        get ticks() {return vals.ticks;},
+    const OUT = {
         tick() {
             vals.ticks += 1;
             dt.setTime(refTime + 60000 * vals.ticks);
@@ -62,13 +60,7 @@ export function getData(initialCash = 1000, element) {
         get hasFinished() {return vals.ticks >= 480;},
         get message() {return vals.message;},
         job: "ab",
-        worker: "ready"
+        display: () => display(vals, element)
     };
-    DATA.display = display(DATA, element);
-    DATA.isReady = id => DATA.job === id && DATA.worker === "ready";
-    return DATA;
-}
-
-export function doTick() {
-
+    return OUT;
 }

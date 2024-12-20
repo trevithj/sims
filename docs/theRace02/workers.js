@@ -9,10 +9,6 @@ export function makeWorker(workerId) {
     const element = viz.querySelector(`#worker-${workerId}`);
     if (!element) return null;
 
-    // element.addEventListener("transitionend", () => {
-    //     leave it up to controlling code to check if worker has SOH
-    //     publish("SetupDone", workerId);
-    // })
     const worker = {
         workerId,
         addEventListener: (...args) => element.addEventListener(...args),
@@ -31,13 +27,15 @@ export function makeWorker(workerId) {
             }
         }
     };
-    subscribe("WorkerAllocated", d => {
+    subscribe("WorkerReallocated", d => {
         if(d.workerId !== workerId) return;
         worker.setStatus("idle");
-        // TODO: use op.src, op.tgt data to transition to new cx value
-        //if (d.oldJob===)
         worker.cx = worker.cx ==="100" ? "400" : "100";
     })
+    subscribe("SimFinished", () => {
+        worker.setStatus("idle");
+    })
+
     return worker;
 }
 

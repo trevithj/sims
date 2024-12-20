@@ -1,16 +1,15 @@
 import {publish, subscribe} from "../pubsub.js";
-import {getData} from "./controls.js";
+import {makeOutput} from "./output.js";
 import {getItemsMap} from "./items.js";
-import {getRM, getItem, getWorker, updateStock, getWIP} from "./selectors.js";
 import { getOpsMap } from "./operations.js";
 import {getWorkersMap} from "./workers.js";
 import {getStoresMap} from "./stores.js";
 
 const viz = document.querySelector("div.theViz");
-const DATA = getData(1000, document.querySelector(".info"));
-DATA.display();
+const OUTPUT = makeOutput(1000, document.querySelector(".info"));
+OUTPUT.display();
 const SIM = { publish, subscribe };
-globalThis.SIM = SIM;
+globalThis.SIM = SIM; // for Testing
 
 fetch("./theRace02.svg").then(r => r.text()).then(raw => {
     viz.innerHTML = raw;
@@ -24,22 +23,18 @@ function buyRM(qty = 5) {
     }
 }
 
-subscribe("TestBuyRM", qty => buyRM(qty)());
-
 function swapJobs() {
-    DATA.worker = "setup";
-    const oldJob = DATA.job; 
+    const oldJob = OUTPUT.job; 
     const newJob = oldJob === "cd" ? "ab" : "cd";
-    publish("WorkerAllocated", { workerId: "b1", oldJob, newJob });
-    getItem(oldJob).classList.remove("move2");
-    DATA.job = newJob;
+    publish("WorkerReallocated", { workerId: "b1", oldJob, newJob });
+    OUTPUT.job = newJob;
 }
 
 function addJobListener() {
     const w = SIM.workersMap.get("b1");
     w.addEventListener("transitionend", () => {
-        if (DATA.hasFinished) return;
-        publish("SetupDone", {opId: `op-${DATA.job}`});
+        if (OUTPUT.hasFinished) return;
+        publish("SetupDone", {opId: `op-${OUTPUT.job}`});
     })
 }
 
@@ -52,64 +47,14 @@ btns[1].addEventListener("click", buyRM(1));
 btns[2].addEventListener("click", swapJobs);
 btns[3].addEventListener("click", startRun);
 
-function pauseWork(id) {
-    const w = getWorker(id);
-    const item = getItem(id);
-    w.classList.remove("busy");
-    item.classList.remove("move1");
-};
-
-function unPauseWork(id) {
-    const w = getWorker(id);
-    const item = getItem(id);
-    w.classList.add("busy");
-    item.classList.add("move1");
-};
-
-subscribe("WIP-Removed", col => {
-    const wip = getWIP(col);
-    if (wip.qty <= 0) {
-        const id = [col, "1"].join("");
-        pauseWork(id);
-    }
-    if (wip.qty < 0) throw Error("qty < 0 !!");
-});
-
-subscribe("WIP-Added", col => {
-    const id = [col, "1"].join("");
-    unPauseWork(id);
-});
-
-subscribe("RM-Added", data => {
-    const { col } = data;
-    const id = col+"0";
-    if (DATA.isReady(id)) {
-        const w = getWorker("x0");
-        const item = getItem(id);
-        w.classList.add("busy");
-        item.classList.add("move2");
-    }
-});
-
-subscribe("RM-Removed", col => {
-    const rm = getRM(col);
-    // if (rm.qty < 0) throw Error("qty < 0 !!");
-    if (rm.qty <= 0) {
-        const w = getWorker("x0");
-        const item = getItem(col+"0");
-        w.classList.remove("busy");
-        item.classList.remove("move2");
-    }
-});
-
 function startRun() {
     btns[0].disabled = false;
     btns[1].disabled = false; 
     btns[2].disabled = false; 
     btns[3].disabled = true;
     const timer = setInterval(() => {
-        DATA.tick();
-        DATA.display()
+        OUTPUT.tick();
+        OUTPUT.display()
     }, 500);
     
     subscribe("SimFinished", () => {
@@ -121,14 +66,11 @@ function startRun() {
 }
 
 function finish() {
-    viz.querySelectorAll(".busy").forEach(el => el.classList.remove("busy"));
-    viz.querySelectorAll(".move1").forEach(el => el.classList.remove("move1"));
-    viz.querySelectorAll(".move2").forEach(el => el.classList.remove("move2"));
     btns[0].disabled = true;
     btns[1].disabled = true;
     btns[2].disabled = true;
     btns[3].disabled = true;
-    DATA.display();
+    OUTPUT.display();
 }
 
 subscribe("InitDone", () => {

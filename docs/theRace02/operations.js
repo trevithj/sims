@@ -38,7 +38,7 @@ export function makeOp(opId, {getWorker, getStore}) {
             return updateStore(tgt, qty);
         }
     }
-    subscribe("WorkerAllocated", d => {
+    subscribe("WorkerReallocated", d => {
         if (`op-${d.oldJob}` === opId) {
             worker.setStatus("idle");
             worker = null;
@@ -82,11 +82,6 @@ export function makeOp(opId, {getWorker, getStore}) {
         if(opId !=="op-cd") worker = getWorker(workerId);
         if (worker) {
             checkSOH();
-        }
-    })
-    subscribe("SimFinished", () => {
-        if (worker) {
-            worker.setStatus("idle");
         }
     })
 
