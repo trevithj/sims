@@ -6,7 +6,7 @@ import {getWorkersMap} from "./workers.js";
 import {getStoresMap} from "./stores.js";
 
 const viz = document.querySelector("div.theViz");
-const OUTPUT = makeOutput(1000, document.querySelector(".info"));
+const OUTPUT = makeOutput(2000, document.querySelector(".info"));
 OUTPUT.display();
 const SIM = { publish, subscribe };
 globalThis.SIM = SIM; // for Testing
