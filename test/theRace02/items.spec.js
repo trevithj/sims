@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {subscribe} from '../docs/pubsub.js';
-import {makeItem} from '../docs/theRace02/items.js';
+import {subscribe} from '../../docs/pubsub.js';
+import {makeItem} from '../../docs/theRace02/items.js';
 
 describe('makeItem', () => {
     it('should create valid item object', () => {

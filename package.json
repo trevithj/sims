@@ -8,8 +8,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "mocha",
-    "test:watch": "mocha --node-option=watch"
+    "test": "mocha --recursive",
+    "test:watch": "mocha --node-option=watch --recursive"
   },
   "repository": {
     "type": "git",

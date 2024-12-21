@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {makeOp} from '../docs/theRace02/operations.js';
-import {publish} from '../docs/pubsub.js';
+import {makeOp} from '../../docs/theRace02/operations.js';
+import {publish} from '../../docs/pubsub.js';
 
 const noFn = () => null;
 const getWorker = (workerId) => ({ workerId, setStatus: noFn });
@@ -28,20 +28,3 @@ describe("makeOp", function() {
         assert.equal(theOp.status,"DEALLOCATED");
     })
 });
-
-/*
-IDLE
-  worker-allocated -> SETUP
-SETUP
-  setup-done -> READY
-READY
-  no-stock -> WAITING
-  stock-taken -> RUNNING
-RUNNING
-  op-done -> READY
-WAITING
-  stock-received -> READY
-
-*/
-
-

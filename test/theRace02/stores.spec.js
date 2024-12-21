@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {makeStore} from "../docs/theRace02/stores.js";
-import {subscribe} from '../docs/pubsub.js';
+import {makeStore} from "../../docs/theRace02/stores.js";
+import {subscribe} from '../../docs/pubsub.js';
 
 describe("makeStore fn", () => {
     it("should update as expected", function(done) {
