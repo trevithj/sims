@@ -1,6 +1,6 @@
 // import assert from 'node:assert';
 import assert from 'node:assert/strict';
-import {simQueue} from "./simHelpers.js";
+import {simQueue, simTimer} from "./simHelpers.js";
 
 function toStr(any) {
     return JSON.stringify(any);
@@ -39,3 +39,50 @@ describe("simQueue", function() {
         assert.equal(queue.size(), 0, "Expect empty queue");
     });
 });
+
+describe("simTimer", () => {
+    it("should initialise as expected", function() {
+        const timer = simTimer();
+        assert.equal(typeof timer.setTimeout, "function");
+        assert.equal(typeof timer.clearTimeout, "function");
+        assert.equal(timer.time, 0);
+        assert.throws(() => {
+            timer.time = -10;
+        }, Error("Can't set time backwards"));
+
+        timer.time = 10;
+
+        assert.throws(() => {
+            timer.time = 5;
+        }, Error("Can't set time backwards"));
+    })
+
+    it("should run timeout as expected", function() {
+        let flag = 1;
+        const cb = () => flag += 2;
+        const timer = simTimer();
+
+        timer.setTimeout(cb, 10);
+        timer.setTimeout(cb, 12);
+        assert.equal(flag, 1);
+
+        timer.time = 10;
+        assert.equal(flag, 3);
+
+        timer.time = 20;
+        assert.equal(flag, 5);
+    })
+
+    it("should allow timeout to be cancelled", function() {
+        let flag = 1;
+        const cb = () => flag = 2;
+        const timer = simTimer();
+
+        const id = timer.setTimeout(cb, 10);
+        assert.equal(flag, 1);
+
+        timer.clearTimeout(id);
+        timer.time = 10;
+        assert.equal(flag, 1);
+    })
+})

@@ -3,10 +3,10 @@ import {subscribe} from "../pubsub.js";
 // Selector functions
 const viz = globalThis?.document?.querySelector("div.theViz");
 
-export function makeWorker(workerId) {
-    // Mock for node tests
-    if (!viz) return null;
-    const element = viz.querySelector(`#worker-${workerId}`);
+export function makeWorker(workerId, element) {
+    if (!element) {
+        element = viz.querySelector(`#worker-${workerId}`);
+    }
     if (!element) return null;
 
     const worker = {

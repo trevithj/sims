@@ -3,6 +3,9 @@ import {subscribe} from '../../docs/pubsub.js';
 import {makeItem} from '../../docs/theRace02/items.js';
 
 describe('makeItem', () => {
+    subscribe("MOCK", text => {
+        console.log("Mock", text);
+    })
     it('should create valid item object', () => {
         const item = makeItem("ra");
         assert.equal(item.itemId, "ra");

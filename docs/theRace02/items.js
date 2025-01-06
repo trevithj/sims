@@ -10,17 +10,22 @@ const itemDefinitions = {
     "df": { keyframes:[{y:300},{y:500}], duration: 5000 }
 }
 
-const noFn = () => null;
+const noFn = (text) => () => publish("MOCK", text);
+const animationMock = {
+    play: noFn("play"),
+    pause: noFn("pause"),
+    addEventListener: noFn("eventListener")
+}
 
 function getItem(id) {
     // Mock for node tests
-    if (!viz) return { addEventListener: noFn };
+    if (!viz) return { addEventListener: noFn("element-eventListener") };
     return viz.querySelector(`#item-${id}`);
 }
 
 function getAnimation(element, defn) {
     // mock for node tests
-    if (!viz) return { play: noFn, pause: noFn, addEventListener: noFn };
+    if (!viz) return animationMock;
     const { keyframes, duration } = defn;
     const animation = element.animate(keyframes, { duration });
     animation.pause(); // so it doesn't run until told to

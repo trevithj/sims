@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Galton Board</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <style>
+        svg {
+            overflow: hidden;
+            border: solid thin blue;
+        }
+        .bouncex {
+            transition: cx 500ms linear, cy 500ms cubic-bezier(0.75, 0, 1, 1);
+        }
+        g.boxes rect {
+            fill: #eeeeee;
+            width: 60px;
+            height: 40px;
+        }
+        g.boxes text {
+            fill: black;
+        }
+        circle#ball {
+            r: 20px;
+            fill: url(#ballgradient); 
+        }
+        circle.pin {
+            fill: orange;
+            r: 5px;
+        }
+        button {
+            width:60%;
+            margin: 0 20%;
+            border-radius: 0.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h3>Galton Board simulator</h3>
+
+        <p><a href="https://en.wikipedia.org/wiki/Galton_board">The gadget</a> that Francis Galton used to demonstrate the central limit theorum. Or as I like to think of it, "where bell-curves come from."</p>
+    
+        <svg width="700" height="350" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="ballgradient">
+                  <stop offset="0%" stop-color="white" />
+                  <stop offset="100%" stop-color="blue" />
+                </radialGradient>
+            </defs>
+    
+            <g style="transform: translate(350px, 30px)">
+                <circle id="ball" class="bouncex" cx="0" cy="-50" />
+            </g>
+            <g class="pins" style="transform: translate(350px, 54px)"></g>
+            <g class="boxes" style="transform: translate(320px, 310px)"></g>
+        </svg>
+        <button id="run">Run</button>
+    </main>
+</body>
+
+<script type="module">
+    import { makeTextCells, makePins, runContinuous } from "./main.js";
+
+    const boxes = makeTextCells([-300,-200,-100,0,100,200,300]);
+    document.querySelector("g.boxes").append(...boxes);
+    
+    const pins = makePins([0,50,100,150,200,250]);
+    document.querySelector("g.pins").append(...pins);
+
+    const btn = document.querySelector("button#run");
+    btn.addEventListener("click", runContinuous);
+</script>
+
+</html>
