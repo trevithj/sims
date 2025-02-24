@@ -1,6 +1,7 @@
+import { describe, test, expect } from "vitest";
 import assert from 'node:assert/strict';
-import {makeWorker} from "../../docs/theRace02/workers.js";
-import {publish} from '../../docs/pubsub.js';
+import {makeWorker} from "./theRace02/workers.js";
+import {publish} from './pubsub.js';
 
 // Mock for node tests
 const elementMock = () => {
@@ -22,7 +23,7 @@ const elementMock = () => {
 }
 
 describe("makeWorker fn", () => {
-    it("should update as expected", function() {
+    test("should update as expected", function() {
         const element = elementMock();
         const worker = makeWorker("w1", element);
         assert.equal(worker.workerId, "w1"); // Initial test value
@@ -35,7 +36,7 @@ describe("makeWorker fn", () => {
         assert(element.classes.has("busy"));
     });
     
-    it("should respond to Reallocation event", function() {
+    test("should respond to Reallocation event", function() {
         const element = elementMock();
         const worker = makeWorker("w2", element);
         worker.setStatus("busy");
@@ -48,7 +49,7 @@ describe("makeWorker fn", () => {
         assert.equal(worker.cx, "100");
     })
 
-    it("should respond to SimFinished event", function() {
+    test("should respond to SimFinished event", function() {
         const element = elementMock();
         const worker = makeWorker("w2", element);
         worker.setStatus("busy");

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Line Sim</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta name="keywords" content="simulation, production line, Goldratt, The Goal"></meta>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+	<style>
+	.box {
+		display: inline-block;
+		text-align: center;
+	}
+	.raw-material {
+		background-color: silver;
+		width: 2.4em;
+	}
+	.store {
+		background-color: white;
+		border: solid thin black;
+		width: 2.4em;
+	}
+	.op {
+		background-color: #EE0;
+		color: #00F;
+		width: 1.4em;
+		/* padding-left: 0.1em; */
+		/* padding-right:0.1em; */
+		border: solid thin white;
+		border-radius: 0.7em;
+	}
+	.cash {
+		background-color: #0FF;
+		color: #F00;
+		margin-left: 1em;
+	}
+	.background {
+		fill: #ccc;
+	}
+	.lineDiv {
+		border: solid thin silver;
+		border-radius: 0.5em;
+		background-color: linen;
+		padding: 0 1em;
+		margin-top: 0.8em;
+	}
+	.lineDiv > h5, .lineDiv > p {
+		margin: 0.4em 0;
+		/* text-align: center; */
+	}
+	.stats {
+		margin-top: 0;
+		margin-left: 2em;
+	}
+	</style>
+</head>
+<body>
+	<h4>Production-line simulation</h4>
+	<div id="main">
+		<div>
+			<p>
+				Based loosely on the dice game described in Eli Goldratt's "The Goal", this simulator
+				compares a "perfect" line (no variation in processes) with the more realistic
+				case of lines with random variation in processes. The simulation runs for 400 time units (ticks)
+				and compares performance of various simulated production lines.
+			</p>
+			<p>
+				The yellow boxes represent operations, with the count (in blue) being the number of <i>units</i> that were processed in the current <i>tick</i>.
+				The grey box is the raw material ready to be consumed by the first operation.
+				The white boxes represent the number of items available to be processed.
+				Moving of items between operations is assumed to be instantaneous.
+				The actual capacity of an operation to process units may be higher than shown, but is limited by the number of available units.
+			</p>
+			<p>
+				The cyan boxes (to the right of each line) represent cash, which starts at zero.
+				The amount of cash at the end of the run is therefore the net profit for that time period.
+				Each unit costs $2, incurred when that unit first enters the line.
+				The line also incurrs fixed costs of $3 per tick.
+				Each finished unit earns $4.
+				If the cash (net profit) is below zero at the end of the run, the line can't pay its bills.
+			</p>
+		</div>
+
+		<div id="preamble"></div>
+
+		<button id="btnStep">Step</button>
+		<button id="btnRunS">Run</button>
+		<button id="btnRunF">Run Fast</button>
+		<button id="btnStop">Stop</button>
+		<span> Time: <span id="ticks">0</span> ticks</span>
+		<button id="btnShow">Show/hide Details</button>
+
+		<div class="simPanel"></div>
+
+		<div id="postamble"></div>
+	</div>
+	<script>
+		const BASE = {};
+		BASE.getEl = (sel) => document.querySelector(sel);
+		BASE.getEls = (sel) => document.querySelectorAll(sel);
+		BASE.version = window.location.search.split("ver=")[1] || "balanced";
+	</script>
+	<script src="render.js"></script>
+	<script src="calcs.js"></script>
+	<script src="docs.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>

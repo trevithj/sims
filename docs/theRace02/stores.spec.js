@@ -1,23 +1,26 @@
+import { describe, it, expect } from "vitest";
 import assert from 'node:assert/strict';
-import {makeStore} from "../../docs/theRace02/stores.js";
-import {subscribe} from '../../docs/pubsub.js';
+import {makeStore} from "./stores.js";
+import {subscribe} from '../pubsub.js';
 
 describe("makeStore fn", () => {
-    it("should update as expected", function(done) {
+    it("should update as expected", () =>  {
         const store = makeStore("s1", {qty: 10, x:123});
         assert.equal(store.qty, 10); // Initial test value
         assert.equal(store.x, 123); // Holds any passed-in values
 
         store.update(3);
-        const unsubscribe = subscribe("StoreUpdated", function(d) {
-            assert.equal(d.storeId,"s1");
-            assert.equal(d.qty, 13);
-            unsubscribe(); // stop other tests from running this.
-            done();
+        return new Promise(done => {
+            const unsubscribe = subscribe("StoreUpdated", (d) => {
+                assert.equal(d.storeId,"s1");
+                assert.equal(d.qty, 13);
+                unsubscribe(); // stop other tests from running this.
+                done();
+            })
         })
     });
     
-    it("should update with negative deltas too", function(done) {
+    it("should update with negative deltas too", () => new Promise(done => {
         const store = makeStore("s2", {qty: 10});
         
         store.update(-6);
@@ -27,7 +30,7 @@ describe("makeStore fn", () => {
             unsubscribe();
             done();
         })
-    });
+    }));
 
     it("should throw if qty goes negative", function() {
         const store = makeStore("rm", {qty: 0 });

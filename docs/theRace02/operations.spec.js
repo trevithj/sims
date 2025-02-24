@@ -1,13 +1,14 @@
+import { describe, test, expect } from "vitest";
 import assert from 'node:assert/strict';
-import {makeOp} from '../../docs/theRace02/operations.js';
-import {publish} from '../../docs/pubsub.js';
+import {makeOp} from './operations.js';
+import {publish} from '../pubsub.js';
 
 const noFn = () => null;
 const getWorker = (workerId) => ({ workerId, setStatus: noFn });
 const getStore = (storeId) => ({ storeId, qty: 10, update: noFn });
 
 describe("makeOp", function() {
-    it("should create the expected object", function(){
+    test("should create the expected object", function(){
         const theOp = makeOp("op-ra", {getWorker, getStore});
         assert.equal(typeof theOp.getStock, "function");
         assert.equal(typeof theOp.putStock, "function");

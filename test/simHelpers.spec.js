@@ -1,4 +1,4 @@
-// import assert from 'node:assert';
+import { describe, it } from "vitest";
 import assert from 'node:assert/strict';
 import {simQueue, simTimer} from "./simHelpers.js";
 
@@ -6,8 +6,8 @@ function toStr(any) {
     return JSON.stringify(any);
 }
 
-describe("simQueue", function() {
-    it("should return an object", function() {
+describe("simQueue", () => {
+    it("should return an object", () => {
         const queue = simQueue();
         assert.ok(typeof queue === "object", "Expected an object");
         assert.ok(typeof queue.pop === "function", "Expected: 'pop' method");
@@ -19,7 +19,7 @@ describe("simQueue", function() {
         assert.equal(queue.size(), 0, "Expected: zero size");
     });
 
-    it("should pop the correct values", function() {
+    it("should pop the correct values", () => {
         const queue = simQueue();
   
         queue.add(123, "anything");
@@ -41,7 +41,7 @@ describe("simQueue", function() {
 });
 
 describe("simTimer", () => {
-    it("should initialise as expected", function() {
+    it("should initialise as expected", () => {
         const timer = simTimer();
         assert.equal(typeof timer.setTimeout, "function");
         assert.equal(typeof timer.clearTimeout, "function");
@@ -57,7 +57,7 @@ describe("simTimer", () => {
         }, Error("Can't set time backwards"));
     })
 
-    it("should run timeout as expected", function() {
+    it("should run timeout as expected", () => {
         let flag = 1;
         const cb = () => flag += 2;
         const timer = simTimer();
@@ -73,7 +73,7 @@ describe("simTimer", () => {
         assert.equal(flag, 5);
     })
 
-    it("should allow timeout to be cancelled", function() {
+    it("should allow timeout to be cancelled", () => {
         let flag = 1;
         const cb = () => flag = 2;
         const timer = simTimer();

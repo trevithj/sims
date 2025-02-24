@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JT Line Sim</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta name="keywords" content="simulation, production line, Goldratt, The Goal"></meta>
+
+	<style>
+        #main {
+            display: grid;
+            padding: 2px;
+            height: 2em;
+            width: 14em;
+            grid-template-columns: 2em 10em 2em;
+        }
+        .stock {
+            text-align: center;
+            font-size: larger;
+            width: 2em;
+            z-index: 10;
+        }
+        .flow {
+            border: solid thin grey;
+            height: 2em;
+            width: 10em;
+            overflow: hidden;
+            z-index: 9;
+        }
+        #box {
+            stroke:black; stroke-width:1;
+        }
+	</style>
+</head>
+<body>
+	<h4>Production-line simulation</h4>
+    <p>
+        The tick event checks the first text box to detect if the value is over zero.
+        If so, trigger the animation, and listen for the finish event.
+        On finish, increment the value in the second text box.
+    </p>
+	<div id="main">
+        <input id="s1" type="number" class="stock" value="0"/>
+        <svg class="flow">
+            <rect id="box" x="-20" y="0" width="20" height="20" fill="blue" />
+        </svg>
+        <input id="s2" type="number" class="stock" value="0"/>
+	</div>
+    <button class="tick">Tick</button>
+	<script>
+		const BASE = {};
+		BASE.getEl = (sel) => document.querySelector(sel);
+		BASE.getEls = (sel) => document.querySelectorAll(sel);
+		BASE.version = window.location.search.split("ver=")[1] || "balanced";
+        
+        function process(box, duration = 3000, listener) {
+        const animater = box.animate(
+            { x: ["-20  ", "100%"]},
+            { duration, easing: "ease-in-out"}
+            );
+            animater.addEventListener("finish", listener);
+            return animater;
+        }
+        
+        const box = BASE.getEl("#box");
+        const inp = BASE.getEl("#s1");
+        const out = BASE.getEl("#s2");
+        const btn = BASE.getEl(".tick");
+        function tick() {
+            const inpVal = parseInt(inp.value);
+            if (inpVal > 0) {
+                inp.value = inpVal - 1;
+                process(box, 3000, () => {
+                    const outVal = parseInt(out.value);
+                    out.value = outVal + 1;
+                })
+            }
+        }
+        btn.addEventListener("click", tick);
+    </script>
+</body>
+</html>
