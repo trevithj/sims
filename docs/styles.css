@@ -8,3 +8,15 @@ body {
 main > p {
     padding-left: 1em;
 }
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    line-height: 1.5rem;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    line-height: 1.5rem;
+}

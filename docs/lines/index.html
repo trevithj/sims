@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Serial Line Sim</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <link rel="stylesheet" href="./style.css" type="text/css">
+    <style type="text/css" media="screen">
+        .stores {
+            font-family: monospace;
+        }
+        .store {
+            fill: white; stroke: silver;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h3>Serial Process Line</h3>
+        <p>I want to figure out a generic way to create a serial process animation.
+            Op and Store can create and return their own DOM elements, based on x,y location.
+            But what about the connecting lines? And the related animations?
+            I can use a group element to ensure lines and animated items are below the store/op elements.
+        </p>
+        <p>IOs:
+            <ul>
+                <li>Don't have a clear idea of network definition yet. What is human-readable and easy to configure?</li>
+                <li>What are the most useful control actions? Let's keep the idea of using animations to control timing. Start/stop? Input/output?</li>
+            </ul>
+        </p>
+        <div>
+            <svg viewBox="0 0 500 500" width="600" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="500" height="500" stroke="blue" fill="none" />
+                <g class="lines"><path d="" /></g>
+                <g class="stores">
+                </g>
+                <g class="flows">
+                </g>
+            </svg>
+        </div>
+        <hr>
+        <div class="grid-3">
+            <button id="pauseButton">Pause</button>
+            <button id="stopButton">Run</button>
+        </div>
+    </main>
+</body>
+<script src="./main.js" type="module">
+</script>
+</html>
