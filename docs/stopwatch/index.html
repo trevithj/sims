@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Serial Line Sim</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <style type="text/css" media="screen">
+        #theClock {
+            max-width: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h3>Stopwatch Control</h3>
+        <p>I want to figure out a generic way to create a process timer component.
+            That means a component that is easy to put on the page, that shows time
+            updates that are not janky, and that can emit a "tick" event or similar.
+        </p>
+        <p>So I have modified an old SVG animation of a stopwatch, so that it can
+            render itself, and can be restarted or paused by user-input.
+            And since it uses CSS animations, the "animationiteration" event is already there.
+        </p>
+        <hr />
+        <div class="grid-3">
+            <button id="pauseButton">Pause</button>
+            <button id="resetButton">Restart</button>
+            <p></p>
+        </div>
+        <div class="grid-3">
+            <div id="theClock"></div>
+            <div id="theTimeDisplay"></div>
+            <p></p>
+        </div>
+        <hr />
+        <p>
+            Each iteration of the animation rotates the clock hand once. A listener updates the tick count, and displays the event's elapsed time.
+            Restarting the animation automatically resets the elapsed time.
+            The count is independent of the event in this case.
+        </p>
+    </main>
+</body>
+<script src="./main.js" type="module">
+</script>
+
+</html>
