@@ -1,4 +1,4 @@
-import Stopwatch from "../../common/stopwatch.js";
+import Stopwatch from "../common/stopwatch.js";
 const pauseButton = document.querySelector('#pauseButton');
 const stopButton = document.querySelector('#stopButton');
 
@@ -6,7 +6,7 @@ const listener = event => console.log(event.elapsedTime);
 
 const { theClock, hand, setState } = Stopwatch({
     listener, 
-    iterations: 20, 
+    // iterations: 20, 
     duration: 500
 });
 theClock.setAttribute("class", "the-clock");

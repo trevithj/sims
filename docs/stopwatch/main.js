@@ -1,4 +1,4 @@
-import Stopwatch from "../../common/stopwatch.js";
+import Stopwatch from "../common/stopwatch.js";
 const pauseButton = document.querySelector('#pauseButton');
 const resetButton = document.querySelector('#resetButton');
 const clockDiv = document.querySelector('#theClock');
