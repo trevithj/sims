@@ -16,7 +16,7 @@ function getQty(textElement, delta = 0) {
 }
 
 export function makeStore(storeId, vals = {}) {
-    const txt = getTextElement(storeId, vals);
+    const txt = getTextElement(storeId);
     const initQty = vals.qty || 0;
     txt.textContent = initQty;
     return Object.freeze({
