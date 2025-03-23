@@ -6,7 +6,11 @@ function doPublish(subject, message) {
     const subscribers = subscriberMap[subject] || [];
     subscribers.forEach(subFn => {
         if (subFn && typeof subFn === "function") {
-            subFn(message);
+            try {
+                subFn(message);
+            } catch (err) {
+                console.warn(err);
+            }
         }
     })
 }

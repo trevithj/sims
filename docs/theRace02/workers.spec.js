@@ -1,7 +1,6 @@
-import { describe, test, expect } from "vitest";
-import assert from 'node:assert/strict';
-import {makeWorker} from "./theRace02/workers.js";
-import {publish} from './pubsub.js';
+import { describe, it, expect } from "vitest";
+import {makeWorker} from "./workers.js";
+import {publish} from '../pubsub.js';
 
 // Mock for node tests
 const elementMock = () => {
@@ -23,40 +22,40 @@ const elementMock = () => {
 }
 
 describe("makeWorker fn", () => {
-    test("should update as expected", function() {
+    it("should update as expected", function() {
         const element = elementMock();
         const worker = makeWorker("w1", element);
-        assert.equal(worker.workerId, "w1"); // Initial test value
-        assert.equal(worker.cx, 0);
+        expect(worker.workerId).toBe("w1"); // Initial test value
+        expect(worker.cx).toBe(0);
         worker.cx = 5;
-        assert.equal(worker.cx, 5);
-        assert.equal(element.attributes.get("cx"), 5);
+        expect(worker.cx).toBe(5);
+        expect(element.attributes.get("cx")).toBe(5);
         
         worker.setStatus("busy");
-        assert(element.classes.has("busy"));
+        expect(element.classes.has("busy")).toBe(true);
     });
     
-    test("should respond to Reallocation event", function() {
+    it("should respond to Reallocation event", function() {
         const element = elementMock();
         const worker = makeWorker("w2", element);
         worker.setStatus("busy");
-        assert(element.classes.has("busy"));
-        assert.equal(worker.cx, 0);
+        expect(element.classes.has("busy")).toBe(true);
+        expect(worker.cx).toBe(0);
         
         publish("WorkerReallocated", { workerId: "w2"}, true);
 
-        assert(!element.classes.has("busy"));
-        assert.equal(worker.cx, "100");
+        expect(element.classes.has("busy")).toBe(false);
+        expect(worker.cx).toBe("100");
     })
 
-    test("should respond to SimFinished event", function() {
+    it("should respond to SimFinished event", function() {
         const element = elementMock();
         const worker = makeWorker("w2", element);
         worker.setStatus("busy");
-        assert(element.classes.has("busy"));
+        expect(element.classes.has("busy")).toBe(true);
         
         publish("SimFinished", "test", true);
 
-        assert(!element.classes.has("busy"));
+        expect(element.classes.has("busy")).toBe(false);
     })
 });
