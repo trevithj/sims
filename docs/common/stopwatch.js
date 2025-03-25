@@ -22,12 +22,14 @@ function construct({duration = 1000, iterations = "infinite", listener}) {
         .ticks { stroke: silver; }
       </style>
     
-      <path d="M2,8 L4,8 M12,8 L14,8 M8,2 L8,4 M8,12 L8,14" stroke="#ddd"/>
+      <circle cx="8" cy="8" fill="#ddd" r="6" stroke="none"/>
+      <path d="M2,8 L4,8 M12,8 L14,8 M8,2 L8,4 M8,12 L8,14" stroke="#aaa" stroke-width="0.5"/>
       <circle cx="8" cy="8" fill="none" r="6" stroke-width="0.5" stroke="black"/>
       <g class="hand">
         <line x1="0" y1="0" x2="0" y2="-5" />
         <circle cx="0" cy="0" r="1" />
       </g>
+      <path d="M3 7C3 5 5 3 7 3 5 3 3 5 3 7" stroke="#fff" stroke-opacity="0.8" stroke-linecap="round" />
     </svg>`;
       
     const hand = theClock.querySelector(".hand > line");
@@ -45,10 +47,13 @@ function construct({duration = 1000, iterations = "infinite", listener}) {
             default: return;
         }
     };
+    const setDuration = ms => {
+        hand.style.animationDuration = `${ms}ms`;
+    }
     // window.TEST = { hand, setState };
     hand.addEventListener('animationiteration', listener);
 
-    return {theClock, hand, setState};
+    return {theClock, hand, setState, setDuration};
 }
 
 export default construct;

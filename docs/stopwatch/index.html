@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Serial Line Sim</title>
+    <title>Stopwatch Sim</title>
     <link rel="stylesheet" href="../styles.css" type="text/css">
     <style type="text/css" media="screen">
         #theClock {
@@ -32,6 +32,11 @@
         <div class="grid-3">
             <div id="theClock"></div>
             <div id="theTimeDisplay"></div>
+            <p></p>
+        </div>
+        <div class="grid-3" id="durationControl">
+            <div>Duration: <span>500ms</span></div>
+            <input id="duration" type="range" min="1" max="50" value="5"/>
             <p></p>
         </div>
         <hr />

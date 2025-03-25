@@ -19,6 +19,7 @@ describe("Stock", () => {
         stock.take(1);
         stock.take(1);
         expect(stock.soh).toBe(10);
+        expect(stock.node.textContent).toBe("10");
 
         return new Promise(done => {
             setTimeout(() => {
