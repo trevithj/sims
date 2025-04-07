@@ -9,12 +9,13 @@ const ctx = canvas.getContext("2d");
 let drawBall;
 let drawPaddle;
 let score = 0;
+let status = "";
 
 function doAlert(message) {
     setTimeout(() => {
         alert(message);
         document.location.reload();
-    }, 10);
+    }, 10)
 }
 
 // Drawing loop
@@ -24,6 +25,11 @@ function draw() {
     drawBall(ctx);
     drawPaddle(ctx);
     drawScore(ctx);
+    if (!status) {
+        requestAnimationFrame(draw);
+    } else {
+        doAlert(status);
+    }
 }
 
 function drawScore(ctx) {
@@ -36,18 +42,16 @@ function startGame() {
     drawPaddle = setupPaddle({canvas});
     drawBall = setupBall({canvas, brickAt});
 
-    const timer = setInterval(draw, 10);
+    // const timer = setInterval(draw, 10);
+    draw();
     subscribe("GAME_OVER", () => {
-        clearInterval(timer);
-        doAlert("GAME OVER");
+        status = "GAME OVER";
     })
     subscribe("BRICK_HIT", () => {
         score += 1;
     })
     subscribe("YOU_WIN", () => {
-        clearInterval(timer);
-        draw()
-        doAlert("YOU WIN!! CONGRATULATIONS");
+        status = "YOU WIN!! CONGRATULATIONS";
     })
 }
 
