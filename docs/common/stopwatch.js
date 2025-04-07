@@ -29,7 +29,7 @@ function construct({duration = 1000, iterations = "infinite", listener}) {
         <line x1="0" y1="0" x2="0" y2="-5" />
         <circle cx="0" cy="0" r="1" />
       </g>
-      <path d="M3 7C3 5 5 3 7 3 5 3 3 5 3 7" stroke="#fff" stroke-opacity="0.8" stroke-linecap="round" />
+      <path d="M3 7C3 5 5 3 7 3 5 3 3 5 3 7" stroke="#fff" stroke-opacity="0.8" stroke-linecap="round" stroke-width="0.6"/>
     </svg>`;
       
     const hand = theClock.querySelector(".hand > line");
