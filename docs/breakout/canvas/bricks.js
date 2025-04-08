@@ -1,4 +1,4 @@
-import {publish} from "../pubsub";
+import {publish} from "../../pubsub";
 
 const brickRowCount = 3;
 const brickColumnCount = 5;

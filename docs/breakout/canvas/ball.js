@@ -1,4 +1,4 @@
-import {publish, subscribe} from "../pubsub";
+import {publish, subscribe} from "../../pubsub";
 
 const ballRadius = 10;
 

@@ -1,4 +1,4 @@
-import {publish} from "../pubsub";
+import {publish} from "../../pubsub";
 
 const paddleHeight = 5;
 const paddleWidth = 75;

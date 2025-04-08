@@ -1,9 +1,10 @@
-import {subscribe} from "../pubsub";
+import {subscribe} from "../../pubsub";
 import {setupBall} from "./ball";
 import {drawBricks, brickAt} from "./bricks";
 import {setupPaddle} from "./paddle"
 
-const canvas = document.getElementById("myCanvas");
+const view = document.getElementById("canvas-section");
+const canvas = view.querySelector("#myCanvas");
 const ctx = canvas.getContext("2d");
 
 let drawBall;
@@ -12,10 +13,9 @@ let score = 0;
 let status = "";
 
 function doAlert(message) {
-    setTimeout(() => {
-        alert(message);
-        document.location.reload();
-    }, 10)
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "#00ddff";
+    ctx.fillText(message, 120, 160);
 }
 
 // Drawing loop
@@ -55,7 +55,7 @@ function startGame() {
     })
 }
 
-document.getElementById("runButton").addEventListener("click", function () {
+view.querySelector(".runButton").addEventListener("click", function () {
     startGame();
     this.disabled = true;
 });

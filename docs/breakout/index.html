@@ -10,7 +10,8 @@
             margin: 0;
         }
 
-        canvas {
+        canvas,
+        svg {
             background: #eee;
             display: block;
             /* transform: scale(1.5); */
@@ -20,19 +21,39 @@
             margin: 0 auto;
         }
 
-        button {
+        section {
+            margin: 10px auto;
+        }
+
+        button.runButton {
             display: block;
+            width: 20em;
         }
     </style>
 </head>
 
 <body>
     <main>
-        <canvas id="myCanvas" width="480" height="320"></canvas>
-        <button id="runButton">Start game</button>
+        <section id="intro">
+            <button class="reload">Reload Page</button>
+        </section>
+        <section id="canvas-section">
+            <canvas id="myCanvas" width="480" height="320"></canvas>
+            <button class="runButton">Start game</button>
+        </section>
+        <section id="svg-section">
+            <svg id="mySVG" width="480" height="320" viewBox="0 0 480 320"></svg>
+            <button class="runButton">Start game</button>
+        </section>
     </main>
 
-    <script type="module" src="./main.js"></script>
+    <script type="module" src="./canvas/main.js"></script>
+    <script type="module" src="./svg/main.js"></script>
+    <script>
+        document.querySelector("button.reload").addEventListener("click", () => {
+            document.location.reload();
+        });
+    </script>
 </body>
 
 </html>
