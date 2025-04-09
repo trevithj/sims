@@ -13,9 +13,9 @@ let score = 0;
 let status = "";
 
 function doAlert(message) {
-    ctx.font = "30px Arial";
+    ctx.font = "22px Arial";
     ctx.fillStyle = "#00ddff";
-    ctx.fillText(message, 120, 160);
+    ctx.fillText(message, 100, 220);
 }
 
 // Drawing loop

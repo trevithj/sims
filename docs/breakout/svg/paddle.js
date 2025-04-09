@@ -26,16 +26,16 @@ export function setupPaddle({svg}) {
 
     function keyDownHandler(e) {
         if (e.key === "Right" || e.key === "ArrowRight") {
-            paddleX = Math.min(paddleX + 7, xOffset);
+            paddleX = Math.min(paddleX + 20, xOffset);
             signalPaddleMoved();
         } else if (e.key === "Left" || e.key === "ArrowLeft") {
-            paddleX = Math.max(paddleX - 7, 0);
+            paddleX = Math.max(paddleX - 20, 0);
             signalPaddleMoved();
         }
     }
 
     function mouseMoveHandler(e) {
-        if (!e.shiftKey) return;
+        if (e.buttons !== 1) return;
         paddleX = Math.max(Math.min(paddleX + e.movementX, xOffset), 0);
         signalPaddleMoved();
     }

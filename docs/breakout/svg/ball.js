@@ -37,8 +37,8 @@ export function setupBall({svg, brickAt}) {
             } else {
                 publish("GAME_OVER");
             }
-            // } else if (brickAt(x,y) !== null) {
-            // dy = -dy;
+        } else if (brickAt(x, y) !== null) {
+            dy = -dy;
         }
         x += dx;
         y += dy;

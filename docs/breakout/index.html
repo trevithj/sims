@@ -3,18 +3,17 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>Breakout Games Workshop</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
     <style>
-        * {
-            padding: 0;
-            margin: 0;
+        canvas {
+            background: #eef;
+            display: block;
         }
 
-        canvas,
         svg {
-            background: #eee;
+            background: #efe;
             display: block;
-            /* transform: scale(1.5); */
         }
 
         main {
@@ -29,19 +28,44 @@
             display: block;
             width: 20em;
         }
+
+        .hidden {
+            display: none;
+        }
+
+        svg text {
+            font: bold 22px sans-serif;
+            fill: #666;
+        }
     </style>
 </head>
 
 <body>
     <main>
         <section id="intro">
+            <p>
+                These simple Breakout games are based on the tutorial at <a
+                    href="https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript">the
+                    MDN site.</a>
+            </p>
+            <p>
+                There are a few tweaks to modularise the code, and both versions make use of a simple pub/sub module.
+                The first version uses a canvas element, the same as the original tutorial. The second version uses an
+                SVG, which removed the need for constant redraws in favour of changing position attributes.
+            </p>
             <button class="reload">Reload Page</button>
+            <form>
+                Canvas version:
+                <input name="tab" type="radio" value="canvas-section" selected />
+                SVG version:
+                <input name="tab" type="radio" value="svg-section" />
+            </form>
         </section>
-        <section id="canvas-section">
+        <section id="canvas-section" class="tab hidden">
             <canvas id="myCanvas" width="480" height="320"></canvas>
             <button class="runButton">Start game</button>
         </section>
-        <section id="svg-section">
+        <section id="svg-section" class="tab hidden">
             <svg id="mySVG" width="480" height="320" viewBox="0 0 480 320"></svg>
             <button class="runButton">Start game</button>
         </section>
@@ -52,6 +76,17 @@
     <script>
         document.querySelector("button.reload").addEventListener("click", () => {
             document.location.reload();
+        });
+        document.querySelector("#intro > form").addEventListener("change", (e) => {
+            window.TEST = e.target;
+            const sectionId = e.target.value;
+            document.querySelectorAll("section.tab").forEach(el => {
+                if (el.id === sectionId) {
+                    el.classList.remove("hidden");
+                } else {
+                    el.classList.add("hidden");
+                }
+            })
         });
     </script>
 </body>
