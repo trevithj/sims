@@ -1,0 +1,134 @@
+body {
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    background-color: #ddd;
+}
+h3 {
+    margin: 1.5rem 0 0.4rem;
+}
+.cell1 {
+    font-size: large;
+    padding: 1rem;
+    border-right: solid thin silver;
+    margin-right: 1rem;
+}
+.cell1 button, .cell1 select {
+    font-size: large;
+    width: 7.5rem;
+    opacity: 0.9;
+    padding: 4px;
+}
+.main {
+    display: grid;
+    grid-template-columns: auto auto 16px;
+    width: calc(100% - 16px);
+    background-color: white;
+    border: solid 7px white;
+    border-radius: 8px;
+    /* height: 800px; */
+    justify-content: start;
+}
+.info p {
+    display: block;
+    text-align: right;
+    font-weight: bold;
+}
+.info span {
+    display: inline-block;
+    width: 40%;
+    font-weight: normal;
+}
+.info input {
+    width: 90%;
+    height: 2rem;
+}
+.orderGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    /* width: 100%; */
+    text-align: right;
+    line-height: 1.5rem;
+}
+.macGrid {
+    display: grid;
+    grid-template-columns: 1fr 3rem 4rem 1fr 1fr;
+    /* width: 100%; */
+    text-align: right;
+    line-height: 1.5rem;
+}
+.macGrid select  {
+    height: 1.5rem;
+    padding: 0 5px;
+}
+.resources, .orders, .info {
+    text-align: right;
+    padding-right: 1rem;
+}
+.resources p, .orders p {
+    border: solid thin silver;
+    padding: 0.1rem 0.4rem 0.1rem 0;
+    margin: 0;
+}
+.purchases {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.display {
+    width: 560px;
+    /* height: inherit; */
+}
+svg {
+    /* width: 100%; */
+    /* height: inherit; */
+    max-height: 94vh;
+    overflow: visible;
+    margin-left: 1.8rem;
+}
+text.row, text.col {
+    font-size: 3px;
+    fill: silver;
+}
+.background {
+    stroke:none;
+    fill: #999;
+    fill-opacity: 0.2;
+}
+.ST {
+    fill:white;
+    stroke: black; 
+}
+.FG {
+    fill: #ffff99;
+    stroke: blue;
+    cursor: pointer; 
+}
+.RM {
+    fill: #ff99ff;
+    stroke: green;
+    cursor: pointer; 
+}
+.optxt {
+    font-size: 3.2px;
+    fill: white;
+}
+.store {
+    font-size: 3px;
+}
+
+path#links {
+    transform: translate(5px, 2.5px);
+}
+
+@keyframes flash {
+    0% { opacity: 1 }
+    50% { opacity: 0 }
+    100% { opacity: 1 }
+}
+.busy {
+    animation: flash 500ms linear infinite;
+}
+ellipse {
+    stroke-width: 0.1;
+}
+ellipse.selected {
+    stroke-width: 0.8;
+}

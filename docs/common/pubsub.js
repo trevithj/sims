@@ -33,3 +33,29 @@ export function subscribe(subject, subFn) {
         return () => subscriberMap[subject] = subscriberMap[subject].filter(fn => fn !== subFn);
     }
 }
+
+// class EventEmitter {
+//     constructor() {
+//       this.listeners = [];
+//     }
+  
+//     subscribe(listener) {
+//       this.listeners.push(listener);
+//       // Return an unsubscribe function for convenience
+//       return () => {
+//         this.listeners = this.listeners.filter(l => l !== listener);
+//       };
+//     }
+  
+//     emit(...args) {
+//       for (const listener of this.listeners) {
+//         try {
+//           listener(...args);
+//         } catch (error) {
+//           // Log the error, but continue with the next listener
+//           console.error('Listener error:', error);
+//         }
+//       }
+//     }
+//   }
+  
