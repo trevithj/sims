@@ -61,3 +61,48 @@ Compare two animated circular queues of stores and flows, same configuration.
 Each has a process that takes from one store, animates some sort of movement, then puts into the next store in the circle. The flow stops if there is no stock to take. Adding stock to a store will trigger a halted flow.
 
 The difference is in the duration of each animation. The first will use a constant time, the second will use the same average time give or take `x`. Make `x` variable, and see how the flow unfolds.
+
+### Gantt Chart
+Display dependent task lists as blocks on a screen, and allow user to adjust start times. App preserves start/finish dependencies either way, and displays capacity loading for each resource type.
+So: `task: { id, start, duration, resType }` and `depend: { fedByTaskId, fedToTaskId }`.
+Helpers: `getEndTime(task)`, `getTask(id)`.
+Load calculation, possible algorithm:
+```
+setLoad(loadMap, time, change) {
+    load = loadMap.get(time) || 0;
+    loadMap.set(time, load + change);
+}
+calcLoad(resType) {
+    loadMap = new Map(); // maps time to load
+    tasks.forEach(t => {
+        if (t.resType !== resType) return;
+        // add load
+        setLoad(loadMap, t.start, 1);
+        // remove load
+        setLoad(loadMap, getTaskEnd(t), -1);
+    })
+    // sort keys/time, then accumulate values
+    loadTotal = 0;
+    return loadMapkeys().sort().map(time => {
+        loadTotal += loadMap.get(time);
+        return {time, capacity: loadTotal };
+    });
+}
+```
+
+Move calculations might be easier if I use separate `moveLater`, `moveEarlier` functions.
+```
+moveEarlier(task, offset) {
+    task.start -= offset; // TODO: how to handle this in state?
+    depends.forEach(d => {
+        if (d.fedToTaskId !== task.id) return;
+        fedBy = getTask(d.fedByTaskId);
+        const newOffset = getEndTime(fedBy) - task.start;
+        if (newOffset > 0) {
+            moveEarlier(fedBy, newOffset);
+        }
+    })
+}
+```
+Design thoughts: instead of recursion, maybe better to calculate the full dependency path/graph first?
+If I use a BFS, then traversing the graph can end early once I find a task that doesn't need moving.

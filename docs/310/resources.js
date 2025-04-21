@@ -2,15 +2,20 @@ import {publish} from "../common/pubsub.js";
 import {createEl, select} from "../common/selectors.js";
 import {theManager} from "./stateManager.js";
 
-export function initResources(){
+const { actions } = theManager.getState();
+// const { data, macColors } = actions.getDefinition();
+
+
+export function initResources(defn) {
     // The resources
     //TODO: refactor to use one element per resource
 
-    const {macs, ops, stores, macColors} = theManager.getState();
+    const { macColors, macOpsMap, data } = defn;
+    const { macs, ops, stores } = data;
     const macsEl = select(".resources");
     const _macs = macs.map(mac => {
         const element = createEl('div', 'macGrid');
-        const macOps = ops.flatMap(op => op.type === mac.type ? op.id : []);
+        const macOps = macOpsMap[mac.id];
         const fill = macColors[mac.type];
         return {...mac, ops: macOps, fill, currentOp: null, element}
     });
@@ -32,13 +37,14 @@ export function initResources(){
             `<p ${style}>${id}</p>`,
             `<p ${style}>${type}</p>`,
             `<p ${style}>${setup}</p>`,
-            `<p ${style}>${status}</p>`,
+            `<p ${style} class="status">${status}</p>`,
             `<p ${style}><select value=${currentOp || '-'}>${options.join('')}</select></p>`
             ].join('');
         mac.element.querySelector('select').addEventListener('change', sel => {
             const lastOp = mac.currentOp;
             mac.currentOp = sel.target.value;
             publish('OPERATION_SET', { mac, lastOp });
+            actions.allocateOp(mac.id, mac.currentOp, lastOp);
         });
     }
     _macs.forEach(mac => {
@@ -58,9 +64,23 @@ export function initResources(){
         const btn = createEl('button', 'purchase');
         btn.innerText = `${rm.name}@$${rm.unitCost}`;
         btn.addEventListener('click', () => {
+            actions.rmPurchased(rm.id);
             publish('RM_PURCHASED', rm.store);
         })
         purchasesEl.appendChild(btn);
     })
     macsEl.appendChild(purchasesEl);
+
+    // Updater function
+    function updateMac(mac, status) {
+        mac.element.querySelector("p.status").textContent = status;
+    }
+    theManager.subscribe((state, oldState) => {
+        const { macStatus } = state;
+        const { macStatus:prevStatus } = oldState;
+        _macs.forEach(mac => {
+            if(macStatus[mac.id] === prevStatus[mac.id]) return;
+            updateMac(mac, macStatus[mac.id]);
+        });
+    });
 };

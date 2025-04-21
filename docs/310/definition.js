@@ -151,4 +151,10 @@ const macColors = {
 }
 const info = {cash: 11000, time: 0, speed: 0};
 
-export {data, macColors, info};
+const macOpsMap = {};
+macs.forEach(mac => {
+    const macOps = ops.flatMap(op => op.type === mac.type ? op.id : []);
+    macOpsMap[mac.id] = macOps;
+})
+
+export {data, macColors, macOpsMap, info};

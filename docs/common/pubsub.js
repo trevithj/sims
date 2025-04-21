@@ -2,8 +2,13 @@
 // The subscribe function returns an unsubscribe fn.
 const subscriberMap = {};
 
+let willLog = false;
+
 function doPublish(subject, message) {
     const subscribers = subscriberMap[subject] || [];
+    if (willLog) {
+        console.log(subject, message, subscribers.length);
+    }
     subscribers.forEach(subFn => {
         if (subFn && typeof subFn === "function") {
             try {
@@ -13,6 +18,13 @@ function doPublish(subject, message) {
             }
         }
     })
+}
+
+export function logging(flag) {
+    if (flag) {
+        willLog = flag;
+    }
+    return willLog;
 }
 
 export function publish(subject, message, runImmediately) {
@@ -33,29 +45,3 @@ export function subscribe(subject, subFn) {
         return () => subscriberMap[subject] = subscriberMap[subject].filter(fn => fn !== subFn);
     }
 }
-
-// class EventEmitter {
-//     constructor() {
-//       this.listeners = [];
-//     }
-  
-//     subscribe(listener) {
-//       this.listeners.push(listener);
-//       // Return an unsubscribe function for convenience
-//       return () => {
-//         this.listeners = this.listeners.filter(l => l !== listener);
-//       };
-//     }
-  
-//     emit(...args) {
-//       for (const listener of this.listeners) {
-//         try {
-//           listener(...args);
-//         } catch (error) {
-//           // Log the error, but continue with the next listener
-//           console.error('Listener error:', error);
-//         }
-//       }
-//     }
-//   }
-  

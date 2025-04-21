@@ -1,10 +1,13 @@
 import {publish, subscribe} from "../common/pubsub.js";
 import {createElSVG, select} from "../common/selectors.js";
-import {theManager} from "./stateManager.js";
+// import {theManager} from "./stateManager.js";
 
-export function initNetwork() {
+// const { actions } = theManager.getState();
 
-    const { stores, ops, macColors } = theManager.getState();
+export function initNetwork(defn) {
+
+    const { data, macColors } = defn;
+    const { stores, ops } = data;
     // The network
     const SIZE = 'width=10 height=10';
     const textPos = "dominant-baseline=middle text-anchor=middle";
@@ -15,12 +18,12 @@ export function initNetwork() {
         element.style = `transform: translate(${x}px, ${y}px)`;
         return {element, x, y};
     }
-    const renderStore = (store) => {
+    const renderStore = (node, store) => {
         const html = [
             `<rect x=2 y=1 width=6 height=4 stroke-width=0.2 class=${store.type} />`,
             `<text ${textPos} y=3 x=5 class="store">${store.qty}</text>`
         ].join('');
-        store.element.innerHTML = html;
+        node.element.innerHTML = html;
     }
     const renderOp = (op) => {
         // console.log(op);
@@ -48,10 +51,11 @@ export function initNetwork() {
 
     // Initial create and render of nodes
     const _stores = stores.map(store => {
+        // const node = create(store);
         const {element, x, y} = create(store);
         const node = mapNode({...store, x, y, element});
         // element.innerHTML = renderStore(store);
-        renderStore(node);
+        renderStore(node, store);
         return node;
     });
     const _ops = ops.map(op => {
@@ -119,8 +123,9 @@ export function initNetwork() {
     // console.log(nodesMap);
     subscribe('RM_PURCHASED', (d) => {
         const rm = nodesMap[d.id];
-        rm.qty += 1;
-        renderStore(rm);
+        console.log(rm);
+        const qty = rm.qty + 1;
+        renderStore(rm, { ...rm, qty });
     })
 
     subscribe('FG_CLICKED', (fg) => {
@@ -148,4 +153,6 @@ export function initNetwork() {
         `<text class="col" y=99 x=${10 * i + 4}>${col}</text>`
     );
     select("#grid").innerHTML = [...rows, ...cols].join("");
+
+    // TODO: return an updater function
 };

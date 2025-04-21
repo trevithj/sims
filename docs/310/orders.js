@@ -1,8 +1,10 @@
 import {select} from "../common/selectors.js";
 import {theManager} from "./stateManager.js";
 
-export function initOrders() {
-    const {orders} = theManager.getState();
+// const { actions } = theManager.getState();
+
+export function initOrders(defn) {
+    const {orders} = defn.data;
     const ordersEl = select(".orders");
     const orderHTML = [
         '<div class="orderGrid">',
@@ -17,4 +19,6 @@ export function initOrders() {
     });
     orderHTML.push('</div>');
     ordersEl.innerHTML = orderHTML.join('');
+
+    //TODO return an update function
 };
