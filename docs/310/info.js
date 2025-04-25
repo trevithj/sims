@@ -1,10 +1,8 @@
-import {publish, subscribe} from "../common/pubsub.js";
 import {select} from "../common/selectors";
-import {theManager} from "./stateManager.js";
-
-const {actions, speed} = theManager.getState();
+import {theManager, actions} from "./stateManager.js";
 
 export function initInfo() {
+    const {time, cash, speed} = theManager.getState();
     const view = select(".info");
     view.innerHTML = `
     <div id="time"></div>
@@ -14,7 +12,7 @@ export function initInfo() {
     <button id="quit">Quit</button>
     <input id="speed" type="range" min="1" max="10" />
     `;
-    const info = {speed}
+    const info = {speed, running:false };
     const els = {
         timeEl: select('#time'),
         cashEl: select('#cash'),
@@ -27,8 +25,7 @@ export function initInfo() {
         const a = [n < 10 ? '0' : '', n];
         return a.join("");
     }
-    function updateTime() {
-        const {time} = theManager.getState();
+    function updateTime(time) {
         // const week = Math.floor(time / 2400);
         const day = Math.floor(time / 480);
         const hour = fmt(Math.floor(time / 60));
@@ -40,19 +37,13 @@ export function initInfo() {
             <p>Time:<span>${hour}:${min}</span></p>
         `.trim();
     }
-    function updateCash() {
-        const cash = theManager.getState().cash
+    function updateCash(cash) {
         els.cashEl.innerHTML = `
         <p>Cash on hand:<span>$${cash}</span></p>
         `.trim();
     }
     function tick() {
         actions.nextStep();
-        const {time, cash, speed} = theManager.getState();
-        // info.time += 1;
-        updateTime();
-        publish('NEXT_STEP', {time, cash, speed});
-        // actions.dispatch('NEXT_STEP', {time, cash, speed});
     }
     function autoTick() {
         tick();
@@ -62,12 +53,6 @@ export function initInfo() {
             info.timeout = setTimeout(autoTick, timeOut);
         }
     }
-    // Initialize view
-    updateTime();
-    updateCash();
-    info.speed = +els.speedEl.value;
-
-    // BASE.logging = true;
 
     els.nextBtn.addEventListener("click", tick);
     els.autoBtn.addEventListener("click", () => {
@@ -81,18 +66,22 @@ export function initInfo() {
         }
     });
     els.speedEl.addEventListener('change', () => {
-        info.speed = +els.speedEl.value;
-        // dispatch()
+        actions.setSpeed(+els.speedEl.value);
     })
-    subscribe('RM_PURCHASED', (rm) => {
-        const {unitCost = 0} = rm;
-        info.cash -= unitCost;
-        updateCash(info.cash);
-        // if info.cash < 0 throw Error"end of sim"
-    })
+    // subscribe('RM_PURCHASED', (rm) => {
+    //     const {unitCost = 0} = rm;
+    //     info.cash -= unitCost;
+    //     updateCash(info.cash);
+    //     // if info.cash < 0 throw Error"end of sim"
+    // })
 
     theManager.subscribe(state => {
-        updateTime();
-        updateCash();
+        updateTime(state.time);
+        updateCash(state.cash);
     })
+
+    // Initialize view
+    updateTime(time);
+    updateCash(cash);
+    actions.setSpeed(+els.speedEl.value);
 };

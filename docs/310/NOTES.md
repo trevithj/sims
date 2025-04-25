@@ -14,3 +14,5 @@ So maybe we need a generic way to initialize the relevant state from the origina
 Take the convention that on creation, each store, resource or order produces a "UI" object that holds its id, a DOM element and an update function. The element needs to be added to the DOM externally, and is responsible for all UI representation of the relevant node.
 
 Now the code can subscribe to the store in order to manage updates.
+
+TODO: move the RM purchasing section somewhere else - declutter resources.js.

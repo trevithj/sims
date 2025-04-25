@@ -17,8 +17,7 @@ export function createOp(opDefn, fill) {
 
     const shape = select("ellipse", element);
 
-    const update = op => {
-        const {status} = op;
+    const update = status => {
         if (status === "set") {
             shape.classList.add("selected");
         } else {

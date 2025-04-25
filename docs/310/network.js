@@ -1,7 +1,8 @@
 import {publish, subscribe} from "../common/pubsub.js";
 import {createElSVG, select} from "../common/selectors.js";
 import {createOp} from "./ops.js";
-import {theManager} from "./stateManager.js";
+import {createStore} from "./stores.js";
+import {theManager, actions, getLastNext} from "./stateManager.js";
 
 // const { actions } = theManager.getState();
 
@@ -10,22 +11,24 @@ export function initNetwork(defn) {
     const { data, macColors } = defn;
     const { stores, ops } = data;
     // The network
-    const SIZE = 'width=10 height=10';
-    const textPos = "dominant-baseline=middle text-anchor=middle";
-    function create(node) {
-        const element = createElSVG('g');
-        const x = node.col * 10 - 10;
-        const y = 90 - node.row * 10;
-        element.style = `transform: translate(${x}px, ${y}px)`;
-        return {element, x, y};
-    }
-    const renderStore = (node, store) => {
-        const html = [
-            `<rect x=2 y=1 width=6 height=4 stroke-width=0.2 class=${store.type} />`,
-            `<text ${textPos} y=3 x=5 class="store">${store.qty}</text>`
-        ].join('');
-        node.element.innerHTML = html;
-    }
+
+    // const SIZE = 'width=10 height=10';
+    // const textPos = "dominant-baseline=middle text-anchor=middle";
+
+    // function create(node) {
+    //     const element = createElSVG('g');
+    //     const x = node.col * 10 - 10;
+    //     const y = 90 - node.row * 10;
+    //     element.style = `transform: translate(${x}px, ${y}px)`;
+    //     return {element, x, y};
+    // }
+    // const renderStore = (node, store) => {
+    //     const html = [
+    //         `<rect x=2 y=1 width=6 height=4 stroke-width=0.2 class=${store.type} />`,
+    //         `<text ${textPos} y=3 x=5 class="store">${store.qty}</text>`
+    //     ].join('');
+    //     node.element.innerHTML = html;
+    // }
 
     const nodesMap = {}; // Needed for line plotting
     function mapNode(node) {
@@ -34,19 +37,16 @@ export function initNetwork(defn) {
     }
 
     // Initial create and render of nodes
-    const _stores = stores.map(store => {
-        // const node = create(store);
-        const {element, x, y} = create(store);
-        const node = mapNode({...store, x, y, element});
-        // element.innerHTML = renderStore(store);
-        renderStore(node, store);
-        return node;
+    const _stores = stores.map(storeDefinition => {
+        const storeNode = createStore(storeDefinition);
+        mapNode(storeNode);
+        return storeNode;
     });
-    const _ops = ops.map(op => {
-        const fill = macColors[op.type] || 'white';
-        const node = createOp(op, fill);
-        mapNode(node);
-        return node;
+    const _ops = ops.map(opDefinition => {
+        const fill = macColors[opDefinition.type] || 'white';
+        const opNode = createOp(opDefinition, fill);
+        mapNode(opNode);
+        return opNode;
     })
 
     // Create the SVG view and add node elements
@@ -126,18 +126,19 @@ export function initNetwork(defn) {
     );
     select("#grid").innerHTML = [...rows, ...cols].join("");
 
-    // TODO: Updater function(s)
-    const updateStore = (node, qty) => {
-        node.element.querySelector("text.store").textContent = qty;
-    }
-  
+    // Handle updates
     theManager.subscribe((state, oldState) => {
-        const { opStatus } = state;
-        const { opStatus:prevStatus } = oldState;
+        const opStatus = getLastNext(oldState, state, "opStatus");
         _ops.forEach(op => {
-            const status = opStatus[op.id];
-            if (status === prevStatus[op.id]) return;
-            op.update({status}); 
+            const status = opStatus.next[op.id];
+            if (status === opStatus.last[op.id]) return;
+            op.update(status); 
+        })
+        const storeQty = getLastNext(oldState, state, "storeQty");
+        _stores.forEach(store => {
+            const qty = storeQty.next[store.id];
+            if (qty === storeQty.last[store.id]) return;
+            store.update(qty); 
         })
     })
 

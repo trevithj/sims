@@ -1,5 +1,5 @@
 import {describe, it, expect} from "vitest";
-import {theManager} from "./stateManager.js";
+import {theManager, actions} from "./stateManager.js";
 
 describe('StateManager.getState', () => {
     const {getState} = theManager;
@@ -19,7 +19,7 @@ describe('StateManager.getState', () => {
     });
 
     it('should provide state update methods', () => {
-        const {actions, time, speed} = getState();
+        const {time, speed} = getState();
         expect(actions).toBeDefined();
         expect(time).toBe(0);
         expect(speed).toBe(0);
@@ -37,9 +37,6 @@ describe('StateManager.getState', () => {
     });
 
     it('should provide state finder methods', () => {
-        const {actions, macs} = getState();
-
-        // console.log(macs[3]);
         const none = actions.getById("unknown");
         const op = actions.getById("OP:A-5");
         const mac = actions.getById("MAC:B-2");
