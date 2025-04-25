@@ -45,7 +45,7 @@ export const theManager = createStore((set) => {
             getDefinition: () => DEFN,
             allocateOp: (macId, opId, lastOpId) => {
                 set(state => {
-                    const opStatus = {...state.opStatus, [lastOpId]:"?" };
+                    const opStatus = {...state.opStatus, [opId]: "set", [lastOpId]:"?" };
                     const macStatus = {...state.macStatus, [macId]:"setup" };
                     const macCurrentOp = {...state.macCurrentOp, [macId]:opId };
                     return { macStatus, macCurrentOp, opStatus };

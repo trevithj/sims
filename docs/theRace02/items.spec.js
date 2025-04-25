@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import assert from 'node:assert/strict';
-import {subscribe} from '../pubsub.js';
+import {subscribe} from '../common/pubsub.js';
 import {makeItem} from './items.js';
 
 describe('makeItem', () => {

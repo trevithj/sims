@@ -1,6 +1,7 @@
 import {publish, subscribe} from "../common/pubsub.js";
 import {createElSVG, select} from "../common/selectors.js";
-// import {theManager} from "./stateManager.js";
+import {createOp} from "./ops.js";
+import {theManager} from "./stateManager.js";
 
 // const { actions } = theManager.getState();
 
@@ -25,23 +26,6 @@ export function initNetwork(defn) {
         ].join('');
         node.element.innerHTML = html;
     }
-    const renderOp = (op) => {
-        // console.log(op);
-        if (!op.element.innerHTML) {
-            const html = [
-                `<title>${op.id}</title>`,
-                `<ellipse cy=7.5 cx=5 rx=2.9 ry=2.3 fill=${op.fill} stroke=black />`,
-                `<text ${textPos} y=7.5 x=5 class="optxt">${op.runtime}</text>`
-            ].join('');
-            op.element.innerHTML = html;
-        } 
-        const shape = op.element.querySelector("ellipse");
-        if (op.selected) { // status?
-            shape.classList.add("selected");
-        } else {
-            shape.classList.remove("selected");
-        }
-    }
 
     const nodesMap = {}; // Needed for line plotting
     function mapNode(node) {
@@ -60,11 +44,8 @@ export function initNetwork(defn) {
     });
     const _ops = ops.map(op => {
         const fill = macColors[op.type] || 'white';
-        const {element, x, y} = create(op);
-        const node = mapNode({...op, x, y, fill, element, selected: 0 });
-        // element.innerHTML = renderOp(op, fill);
-        // return mapNode({...op, x, y, fill, element });
-        renderOp(node);
+        const node = createOp(op, fill);
+        mapNode(node);
         return node;
     })
 
@@ -132,17 +113,8 @@ export function initNetwork(defn) {
         console.log(fg);
     })
     subscribe('OPERATION_SET', (data) => {
-        const updateOp = (id, selected) => {
-            const op = nodesMap[id];
-            if(op) {
-                op.selected += selected;
-                renderOp(op);
-            }
-        }
         const { mac, lastOp = "-" } = data;
         console.log(`Machine ${mac.id} changed from ${lastOp} to ${mac.currentOp}`);
-        updateOp(lastOp, -1);
-        updateOp(mac.currentOp, 1);
     })
 
     // draw the reference grid
@@ -154,5 +126,19 @@ export function initNetwork(defn) {
     );
     select("#grid").innerHTML = [...rows, ...cols].join("");
 
-    // TODO: return an updater function
+    // TODO: Updater function(s)
+    const updateStore = (node, qty) => {
+        node.element.querySelector("text.store").textContent = qty;
+    }
+  
+    theManager.subscribe((state, oldState) => {
+        const { opStatus } = state;
+        const { opStatus:prevStatus } = oldState;
+        _ops.forEach(op => {
+            const status = opStatus[op.id];
+            if (status === prevStatus[op.id]) return;
+            op.update({status}); 
+        })
+    })
+
 };

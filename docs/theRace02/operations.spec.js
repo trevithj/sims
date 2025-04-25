@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import assert from 'node:assert/strict';
 import {makeOp} from './operations.js';
-import {publish} from '../pubsub.js';
+import {publish} from '../common/pubsub.js';
 
 const noFn = () => null;
 const getWorker = (workerId) => ({ workerId, setStatus: noFn });

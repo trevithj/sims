@@ -1,4 +1,4 @@
-import {publish} from "../pubsub";
+import {publish} from "./pubsub";
 
 function makeMockNode(id) {
     const node = {textContent: "", innerHTML: ""};

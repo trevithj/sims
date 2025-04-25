@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {makeStore} from "./stores.js";
-import {subscribe} from '../pubsub.js';
+import {subscribe} from '../common/pubsub.js';
 
 describe("makeStore fn", () => {
     it("should update as expected", () =>  {

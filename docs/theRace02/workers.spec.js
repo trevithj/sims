@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {makeWorker} from "./workers.js";
-import {publish} from '../pubsub.js';
+import {publish} from '../common/pubsub.js';
 
 // Mock for node tests
 const elementMock = () => {

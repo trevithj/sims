@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import makeStock from "./stock";
-import {subscribe} from "../pubsub";
+import makeStock from "./stock.js";
+import {subscribe} from "./pubsub.js";
 
 describe("Stock", () => {
     const stock = makeStock("test", {max:25, soh:10});

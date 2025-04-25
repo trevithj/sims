@@ -1,4 +1,4 @@
-import {publish, subscribe} from "../pubsub.js";
+import {publish, subscribe} from "../common/pubsub.js";
 
 /*  OPS
 operation-id: source-store-id, target-store-id, item-id, worker-id

@@ -1,4 +1,4 @@
-import {publish, subscribe} from "../pubsub.js";
+import {publish, subscribe} from "../common/pubsub.js";
 
 const viz = globalThis?.document?.querySelector("div.theViz");
 
