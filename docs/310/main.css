@@ -41,10 +41,10 @@ h3 {
     width: 90%;
     height: 2rem;
 }
-.orderGrid {
+.orderRow {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    /* width: 100%; */
+    width: 100%;
     text-align: right;
     line-height: 1.5rem;
 }

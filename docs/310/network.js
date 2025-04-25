@@ -113,8 +113,8 @@ export function initNetwork(defn) {
         console.log(fg);
     })
     subscribe('OPERATION_SET', (data) => {
-        const { mac, lastOp = "-" } = data;
-        console.log(`Machine ${mac.id} changed from ${lastOp} to ${mac.currentOp}`);
+        const { id, lastOp = "-" , currentOp} = data;
+        console.log(`Machine ${id} changed from ${lastOp} to ${currentOp}`);
     })
 
     // draw the reference grid
