@@ -28,17 +28,16 @@ const clampSpeed = clamp(0, 20);
 export const theManager = createStore((set) => {
     const idMap = makeIdMap(DEFN.data);
     const {ops, macs, stores, orders} = DEFN.data;
-    const maps = {
-        storeQty: makeMap(stores, s => s.qty),
-        opStatus: makeMap(ops, () => "?"),
-        macStatus: makeMap(macs, () => "idle"),
-        macCurrentOp: makeMap(macs, () => null),
-        ordersQty: makeMap(orders, () => 0),
-    }
 
     return {
+        taskList: [],
+        currentTasks: [],
         idMap,
-        ...maps,
+        opStatus: makeMap(ops, () => "?"),
+        ordersQty: makeMap(orders, () => 0),
+        macStatus: makeMap(macs, () => "idle"),
+        macCurrentOp: makeMap(macs, () => null),
+        storeQty: makeMap(stores, s => s.qty),
         ...DEFN.info
     };
 });
@@ -52,24 +51,26 @@ export function getLastNext(lastState, nextState, property) {
 }
 
 export const actions = {
-    nextStep: () => theManager.setState(state => ({time: state.time + 1})),
+    nextStep: (step = 1) => {
+        theManager.setState(state => ({time: state.time + Math.abs(step)}));
+        // TODO: update current tasks list
+    },
     allocateOp: (macId, opId, lastOpId) => theManager.setState(state => {
         const opStatus = {...state.opStatus, [opId]: "set", [lastOpId]: "?"};
         const macStatus = {...state.macStatus, [macId]: "setup"};
         const macCurrentOp = {...state.macCurrentOp, [macId]: opId};
+        // TODO: add relevant tasks
         return {macStatus, macCurrentOp, opStatus};
     }),
     rmPurchased: (id, qty = 1) => theManager.setState(state => {
         const store = getById(id);
-        // console.log(store, id);
         if (!store) return {};
 
-        const {cash} = state;
         const payment = qty * store.unitCost;
         // Update store.qty.
         const soh = state.storeQty[id];
         const storeQty = {...state.storeQty, [id]: soh + qty};
-        return {cash: cash - payment, storeQty};
+        return {cash: state.cash - payment, storeQty};
     }),
     setSpeed: speed => theManager.setState({
         speed: clampSpeed(speed)

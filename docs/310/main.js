@@ -20,8 +20,15 @@ initPurchasing(DEFN);
 // Set up the sim requirements
 initOrders(DEFN);
 
-// TODO: set up subscribe, and decide what needs re-rendering
+// TODO: set up subscribe, and decide how to handle next step
 theManager.subscribe((newState, oldState) => {
     console.log({newState, oldState});
-    // console.log([...newState.idMap.values()]);
+    const time = getLastNext(oldState, newState, "time");
+    if(time.same) return; //
+
+    console.log("TODO: process next step");
+    // Get task list for this time
+    // foreach task:
+    //   calc the new state properties
+    // update state (batch?)
 });

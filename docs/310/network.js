@@ -130,8 +130,8 @@ export function initNetwork(defn) {
     theManager.subscribe((state, oldState) => {
         const opStatus = getLastNext(oldState, state, "opStatus");
         _ops.forEach(op => {
+            if (opStatus.same) return;
             const status = opStatus.next[op.id];
-            if (status === opStatus.last[op.id]) return;
             op.update(status); 
         })
         const storeQty = getLastNext(oldState, state, "storeQty");

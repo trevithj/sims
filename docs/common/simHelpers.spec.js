@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {simQueue, simTimer} from "./simHelpers.js";
+import {simMapQueue, simQueue, simTimer} from "./simHelpers.js";
 
 describe("simQueue", () => {
     it("should return an object", () => {
@@ -16,11 +16,12 @@ describe("simQueue", () => {
     
     it("should pop the correct values", () => {
         const queue = simQueue();
-        
+        const now = performance.now();
         queue.add(123, "anything");
         queue.add(124, "X");
         queue.add(125, "Y");
         expect(queue.size()).toBe(3);
+        console.log(queue.toString())
         
         let result = queue.pop(121);
         expect(result).toEqual([]);
@@ -32,6 +33,40 @@ describe("simQueue", () => {
         result = queue.pop(126);
         expect(result).toEqual(["X", "Y"]);
         expect(queue.size()).toBe(0);
+        console.log(performance.now() - now);
+    });
+});
+
+describe("simMapQueue", () => {
+    it("should return an object", () => {
+        const queue = simMapQueue();
+        const theString = queue.toString();
+        expect(theString).toBe("[]");
+        expect(queue.size()).toBe(0);
+    });
+    
+    it("should pop the correct values", () => {
+        const queue = simMapQueue();
+        const now = performance.now();
+        queue.add(123, "anything");
+        queue.add(124, "X");
+        queue.add(126, "Y");
+        queue.add(126, "Z");
+        expect(queue.size()).toBe(4);
+        expect(queue.keys()).toEqual([123, 124, 126]);
+        
+        let result = queue.pop(121);
+        expect(result).toEqual([]);
+        
+        result = queue.pop(123);
+        expect(result).toEqual(["anything"]);
+        expect(queue.size()).toBe(3);
+        
+        result = queue.pop(126);
+        expect(result).toEqual(["Y", "Z"]);
+        expect(queue.size()).toBe(1);
+        expect(queue.keys()).toEqual([124]);
+        console.log(performance.now() - now);
     });
 });
 
