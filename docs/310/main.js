@@ -1,5 +1,5 @@
 import * as DEFN from "./definition.js";
-import {theManager} from "./stateManager.js";
+import {getLastNext, theManager} from "./stateManager.js";
 import {initInfo} from "./info.js";
 import {initNetwork} from "./network.js";
 import {initResources} from "./resources.js";

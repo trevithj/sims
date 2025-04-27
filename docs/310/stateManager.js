@@ -1,5 +1,6 @@
 import {createStore} from "zustand/vanilla";
 import * as DEFN from "./definition.js";
+import {makePriorityQueue} from "../common/simHelpers.js";
 
 function makeIdMap(data) {
     const {orders, stores, ops, macs} = data;
@@ -21,7 +22,16 @@ function clamp(min, max) {
     return value => Math.min(Math.max(value, min), max);
 }
 
+const taskQueue = makePriorityQueue();
 
+function getTasks(time) {
+    if (taskQueue.peek() === null) return [];
+    const aTasks = [];
+    while (taskQueue.peekPriority() <= time) {
+        aTasks.push(taskQueue.dequeue());
+    }
+    return aTasks;
+}
 
 const clampSpeed = clamp(0, 20);
 
@@ -30,7 +40,6 @@ export const theManager = createStore((set) => {
     const {ops, macs, stores, orders} = DEFN.data;
 
     return {
-        taskList: [],
         currentTasks: [],
         idMap,
         opStatus: makeMap(ops, () => "?"),
@@ -41,24 +50,32 @@ export const theManager = createStore((set) => {
         ...DEFN.info
     };
 });
+
 const getById = id => theManager.getState().idMap.get(id) || null;
 
 export function getLastNext(lastState, nextState, property) {
     const last = lastState[property];
     const next = nextState[property];
     const same = last === next;
-    return { last, next, same };
+    return {last, next, same};
 }
 
 export const actions = {
     nextStep: (step = 1) => {
-        theManager.setState(state => ({time: state.time + Math.abs(step)}));
-        // TODO: update current tasks list
+        theManager.setState(state => {
+            const time = state.time + Math.abs(step);
+            const currentTasks = getTasks(time);
+            // TODO: execute current tasks
+            return {time, currentTasks};
+        });
     },
     allocateOp: (macId, opId, lastOpId) => theManager.setState(state => {
         const opStatus = {...state.opStatus, [opId]: "set", [lastOpId]: "?"};
         const macStatus = {...state.macStatus, [macId]: "setup"};
         const macCurrentOp = {...state.macCurrentOp, [macId]: opId};
+        const mac = getById(macId);
+        taskQueue.enqueue({mac, status: "READY"}, state.time + mac.setup);
+        // const taskList = [...state.taskList, `Setup-Finished: ${macId} @ ${state.time + mac.setup}`];
         // TODO: add relevant tasks
         return {macStatus, macCurrentOp, opStatus};
     }),

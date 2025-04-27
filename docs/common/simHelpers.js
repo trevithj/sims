@@ -32,7 +32,7 @@ export function simQueue() {
 
 /* Priority Queue backed by a Map.
  This version only pops the exact key match, which is much faster. 
- `It is up to calling code to handle flushing of earlier values that may have been missed.
+ It is up to calling code to handle flushing of earlier values that may have been missed.
 */
 export function simMapQueue() {
     const queue = new Map();
@@ -52,51 +52,9 @@ export function simMapQueue() {
         },
         size: () => length,
         keys: () => [...queue.keys()],
-        toString: () => {
-            return JSON.stringify([...queue]);
-        // toString: () => {
-        //     const array = [...queue].flatMap(pair => {
-        //         const [t, values] = pair;
-        //         return values.map(value => {
-        //             return { t, value };
-        //         })
-        //     });
-        //     array.sort(sortByT);
-        //     return JSON.stringify(array.map(obj => {
-        //         const {t, value} = obj;
-        //         return `${t}: ${value}`;
-        //     }));
-        }
+        toString: () => JSON.stringify([...queue])
     };
 }
-// /* Priority Queue backed by a sorted array.
-//  Note that a Map<number, array> might be more efficient,
-//  except for the need for the pop method to flush the queue of any preceeding values.
-// */
-// export function simQueue() {
-//     const array = [];
-//     return {
-//         add(t, value) {
-//             array.push({t, value});
-//             array.sort(sortByT);
-//         },
-//         pop(t) {
-//             if (array.length === 0) return [];
-//             if (array[0].t > t) return [];
-//             const result = [];
-//             while (array.length > 0 && array[0].t <= t) {
-//                 const v = array.shift();
-//                 result.push(v.value);
-//             }
-//             return result;
-//         },
-//         size: () => array.length,
-//         toString: () => JSON.stringify(array.map(obj => {
-//             const {t, value} = obj;
-//             return `${t}: ${value}`;
-//         }))
-//     };
-// }
 
 export function simTimer() {
     let currentSimTime = 0;
@@ -127,4 +85,52 @@ export function simTimer() {
         }
     }
     return test;
+}
+
+// Perplexity suggested a linked-list implementation.
+// https://www.perplexity.ai/search/how-can-a-linked-list-be-imple-Hug7Q_rdQf6v2Zlt3fYRSQ
+
+export function makePriorityQueue() {
+
+    let head = null;
+
+    function enqueue(value, priority) {
+        const newNode = {value, priority, next: null};
+        if (!head || priority < head.priority) {
+            newNode.next = head;
+            head = newNode;
+        } else {
+            let current = head;
+            while (current.next && current.next.priority <= priority) {
+                current = current.next;
+            }
+            newNode.next = current.next;
+            current.next = newNode;
+        }
+    }
+
+    function dequeue() {
+        if (!head) return null;
+        const value = head.value;
+        head = head.next;
+        return value;
+    }
+
+    function peek() {
+        return head ? head.value : null;
+    }
+    function peekPriority() {
+        return head ? head.priority : Number.MAX_SAFE_INTEGER;
+    }
+
+    // Traverse and print all node values
+    function traverse(cb) {
+        let current = head;
+        while (current) {
+            cb(current.value, current.priority);
+            current = current.next;
+        }
+    }
+
+    return {enqueue, dequeue, peek, peekPriority, traverse};
 }
