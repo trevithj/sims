@@ -1,5 +1,5 @@
 import {publish, subscribe} from "../common/pubsub.js";
-import {createElSVG, select} from "../common/selectors.js";
+import {select} from "../common/selectors.js";
 import {createOp} from "./ops.js";
 import {createStore} from "./stores.js";
 import {theManager, actions, getLastNext} from "./stateManager.js";
@@ -11,24 +11,6 @@ export function initNetwork(defn) {
     const { data, macColors } = defn;
     const { stores, ops } = data;
     // The network
-
-    // const SIZE = 'width=10 height=10';
-    // const textPos = "dominant-baseline=middle text-anchor=middle";
-
-    // function create(node) {
-    //     const element = createElSVG('g');
-    //     const x = node.col * 10 - 10;
-    //     const y = 90 - node.row * 10;
-    //     element.style = `transform: translate(${x}px, ${y}px)`;
-    //     return {element, x, y};
-    // }
-    // const renderStore = (node, store) => {
-    //     const html = [
-    //         `<rect x=2 y=1 width=6 height=4 stroke-width=0.2 class=${store.type} />`,
-    //         `<text ${textPos} y=3 x=5 class="store">${store.qty}</text>`
-    //     ].join('');
-    //     node.element.innerHTML = html;
-    // }
 
     const nodesMap = {}; // Needed for line plotting
     function mapNode(node) {
@@ -122,9 +104,12 @@ export function initNetwork(defn) {
         `<text class="row" x=-3 y=${96 - (10 * row)}>${row}</text>`
     );
     const cols = 'A B C D E F G H'.split(' ').map((col, i) =>
+        `<text class="col" y=-2 x=${10 * i + 4}>${col}</text>`
+    );
+    const cols2 = 'A B C D E F G H'.split(' ').map((col, i) =>
         `<text class="col" y=99 x=${10 * i + 4}>${col}</text>`
     );
-    select("#grid").innerHTML = [...rows, ...cols].join("");
+    select("#grid").innerHTML = [...rows, ...cols, ...cols2].join("");
 
     // Handle updates
     theManager.subscribe((state, oldState) => {

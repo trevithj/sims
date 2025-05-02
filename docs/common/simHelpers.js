@@ -132,5 +132,23 @@ export function makePriorityQueue() {
         }
     }
 
-    return {enqueue, dequeue, peek, peekPriority, traverse};
+    function remove(evalFn) {
+        // Remove matching head nodes
+        while (head && evalFn(head.value, head.priority)) {
+            head = head.next;
+        }
+        if (head === null || !head.next) return; // check for empty list
+        let current = head.next;
+        let prev = head;
+        while (current) {
+            if (evalFn(current.value, current.priority)) {
+                prev.next = current.next; // Remove current node
+            } else {
+                prev = current;
+            }
+            current = current.next;
+        }
+    }
+
+    return {enqueue, dequeue, peek, peekPriority, traverse, remove};
 }

@@ -36,6 +36,36 @@ describe('StateManager.getState', () => {
         actions.rmPurchased("");
     });
 
+    it('should allow allocations and setup', () => {
+        expect(getState().macCurrentOp["MAC:A-1"]).toBe(null);
+        expect(getState().macStatus["MAC:A-1"]).toBe("idle");
+        expect(getState().opStatus["OP:E-5"]).toBe("?");
+
+        actions.allocateOp("MAC:A-1", "OP:E-5");
+        expect(getState().macCurrentOp["MAC:A-1"]).toBe("OP:E-5");
+        expect(getState().macStatus["MAC:A-1"]).toBe("setup");
+        expect(getState().opStatus["OP:E-5"]).toBe("set");
+        expect(getState().opStatus["OP:C-5"]).toBe("?");
+
+        actions.nextStep(5);
+        actions.allocateOp("MAC:A-1", "OP:C-5", "OP:E-5");
+        expect(getState().opStatus["OP:E-5"]).toBe("?");
+        expect(getState().opStatus["OP:C-5"]).toBe("set");
+
+        expect(getState().currentTasks.length).toBe(0);
+        // check that previous allocation task is removed
+        actions.nextStep(10);
+        expect(getState().currentTasks.length).toBe(0);
+
+        actions.nextStep(10);
+        console.log(getState().currentTasks);
+        expect(getState().currentTasks.length).toBe(1);
+        // actions.nextStep();
+        // expect(getState().macCurrentOp['MAC:A-1")).toBe(null);
+
+        // actions.rmPurchased("");
+    });
+
     it('should provide state finder methods', () => {
         const none = actions.getById("unknown");
         const op = actions.getById("OP:A-5");

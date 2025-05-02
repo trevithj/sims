@@ -1,4 +1,4 @@
-import {describe, it, expect, afterAll} from "vitest";
+import {describe, it, expect, beforeEach} from "vitest";
 import {makePriorityQueue, simMapQueue, simQueue, simTimer} from "./simHelpers.js";
 
 function doTime(callback, name = "") {
@@ -79,11 +79,21 @@ describe("simMapQueue", () => {
 });
 
 describe("makePriorityQueue", () => {
-    const queue = makePriorityQueue();
-    queue.enqueue("XYZ", 10);
-    queue.enqueue("ABC", 1);
-    queue.enqueue("MID", 3);
+    let queue;
 
+    function getLog(q) {
+        const log = [];
+        q.traverse((v, p) => log.push(`${v}:${p}`));
+        return log;
+    }
+
+    beforeEach(() => {
+        queue = makePriorityQueue();
+        queue.enqueue("XYZ", 10);
+        queue.enqueue("ABC", 1);
+        queue.enqueue("MID", 3);
+    });
+    
     it("should transverse in priority order", () => {
         doTime(() => {
             const log = [];
@@ -96,6 +106,23 @@ describe("makePriorityQueue", () => {
                 "XYZ:10"
             ]);
         }, "priorityQueue1")
+    });
+    
+    it("should remove matching items", () => {
+        doTime(() => {
+            queue.enqueue("LEFT", 4);
+            expect(queue.peek()).toBe("ABC");
+            
+            queue.remove((v, p) => {
+                return p !== 4;
+            });
+            expect(getLog(queue)).toEqual([
+                "LEFT:4"
+            ])
+        }, "priorityQueue-remove");
+        // ensure empty queue doesn't error
+        const q2 = makePriorityQueue();
+        q2.remove(() => true);
     });
 
     it("should peek and dequeue next value by priority", () => {
@@ -117,8 +144,7 @@ describe("makePriorityQueue", () => {
         doTime(() => {
             queue.enqueue("MIE", 3);
             queue.enqueue("MIF", 3);
-            let log = [];
-            queue.traverse((v, p) => log.push(`${v}:${p}`));
+            let log = getLog(queue);
             expect(log).toEqual([
                 "ABC:1",
                 "MID:3",
@@ -130,8 +156,7 @@ describe("makePriorityQueue", () => {
             while (queue.peekPriority() < 5) {
                 queue.dequeue();
             }
-            log = [];
-            queue.traverse((v, p) => log.push(`${v}:${p}`));
+            log = getLog(queue);
             expect(log).toEqual(["XYZ:10"]);
 
         }, "priorityQueue2")

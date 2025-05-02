@@ -51,6 +51,20 @@ export const theManager = createStore((set) => {
     };
 });
 
+///////////////////////////////////////////////////
+const DO = {
+    MAC_READY: (state, {mac}) => {
+        const macId = mac.id;
+        const macStatus = {...state.macStatus, [macId]: "ready" };
+        return {...state, macStatus };
+    }
+}
+
+function reduce(state, action) {
+    const execute = DO[action.type];
+    return execute ? execute(state, action) : state;
+}
+
 const getById = id => theManager.getState().idMap.get(id) || null;
 
 export function getLastNext(lastState, nextState, property) {
@@ -64,19 +78,19 @@ export const actions = {
     nextStep: (step = 1) => {
         theManager.setState(state => {
             const time = state.time + Math.abs(step);
+            // execute current tasks
             const currentTasks = getTasks(time);
-            // TODO: execute current tasks
-            return {time, currentTasks};
+            const newState = currentTasks.reduce(reduce, state);
+            return {...newState, time, currentTasks};
         });
     },
     allocateOp: (macId, opId, lastOpId) => theManager.setState(state => {
-        const opStatus = {...state.opStatus, [opId]: "set", [lastOpId]: "?"};
+        const opStatus = {...state.opStatus, [lastOpId || opId]: "?", [opId]: "set"};
         const macStatus = {...state.macStatus, [macId]: "setup"};
         const macCurrentOp = {...state.macCurrentOp, [macId]: opId};
         const mac = getById(macId);
-        taskQueue.enqueue({mac, status: "READY"}, state.time + mac.setup);
-        // const taskList = [...state.taskList, `Setup-Finished: ${macId} @ ${state.time + mac.setup}`];
-        // TODO: add relevant tasks
+        taskQueue.remove(value => value.mac === mac && value.type ==="MAC_READY");
+        taskQueue.enqueue({mac, type: "MAC_READY"}, state.time + mac.setup);
         return {macStatus, macCurrentOp, opStatus};
     }),
     rmPurchased: (id, qty = 1) => theManager.setState(state => {
