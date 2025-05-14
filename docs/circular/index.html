@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Circular Queue Sim</title>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <link rel="stylesheet" href="./style.css" type="text/css">
+    <style type="text/css" media="screen">
+        .stores {
+            font-family: monospace;
+        }
+        .store {
+            fill: white; stroke: silver;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h3>Circular Queue Sim</h3>
+        <p>Based on a traffic simulator I once saw, this sim explores how work flow 
+            is impacted by random fluctuations in the rate of each process.
+        </p>
+        <p>TODOs:
+            <ul>
+                <li>Use the actual animations to control the sim.</li>
+                <li>Figure out how to control the random duration of each process.</li>
+                <li>Look at how to pause, reset, restart the sim.</li>
+            </ul>
+        </p>
+        <div>
+            <svg viewBox="0 0 100 100" width="600" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="100" height="100" stroke="blue" fill="none" />
+                <g class="flows"></g>
+                <g class="lines"><path d="" /></g>
+                <g class="stores">
+                </g>
+            </svg>
+        </div>
+        <hr>
+        <div class="grid-3">
+            <button id="pauseBtn">Pause</button>
+            <button id="runBtn">Run</button>
+        </div>
+    </main>
+</body>
+<script src="./main.js" type="module">
+</script>
+</html>

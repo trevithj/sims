@@ -1,0 +1,6 @@
+g.stores {
+    transform: translate(-3px, 3px);
+}
+g.stores text {
+    border: solid thin grey;
+}
