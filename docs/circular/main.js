@@ -1,6 +1,6 @@
 import {animateCircleTranslate, getCirclePoints} from "./animate";
 
-const STATE = { variation: 500 };
+const STATE = { variation: 300, blockers: 0, initSOH: 4, storeCount: 16 };
 
 const BaseCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 BaseCircle.setAttribute('r', 8);
@@ -21,18 +21,23 @@ function makeStoreElement(x, y, qty = 0) {
     group.appendChild(text);
 }
 
-const points = getCirclePoints(8);
+const points = getCirclePoints(STATE.storeCount);
 points.forEach(point => {
-    makeStoreElement(point.cx, point.cy, 2);
+    makeStoreElement(point.cx, point.cy, STATE.initSOH);
 });
 
 function makeStore(element) {
     const x = +element.getAttribute("x");
     const y = +element.getAttribute("y");
+    const colr = code => element.style.fill = code;
     return Object.freeze({
+        blocked: () => colr("white"),
         x, y,
         get soh() {return +element.textContent || 0;},
-        set soh(qty) {element.textContent = qty;}
+        set soh(qty) {
+            element.textContent = qty;
+            if (qty > 0) colr("black");
+        }
     });
 }
 
@@ -42,12 +47,13 @@ const ops = stores.map((fedby, index) => {
     const fedto = stores[(index + 1) % stores.length];
     return {fedby, index, fedto};
 })
-console.log(stores, ops);
+// console.log(stores, ops);
+// For debugging etc
 window.BASE = {stores, ops, STATE };
 
 function randomDuration() {
     const r = Math.random() * STATE.variation;
-    return Math.round(1000 - STATE.variation + r);
+    return Math.round(600 - STATE.variation + r);
 }
 
 const doAnimate = animateCircleTranslate(SVG.querySelector("g.flows"));
@@ -58,6 +64,8 @@ function runOpIfPossible(index) {
     if (op.status === "running") return;
     if (op.fedby.soh <= 0) {
         op.status = "waiting";
+        op.fedby.blocked();
+        STATE.blockers += 1;
         return;
     }
     op.status = "running";
@@ -66,31 +74,30 @@ function runOpIfPossible(index) {
     doAnimate(op.fedby, op.fedto, randomDuration(), () => {
         op.fedto.soh += 1;
         op.status = "waiting";
-        // runOpIfPossible(index+1);
-        // setTimeout(() => {
         runOpIfPossible(index);
         runOpIfPossible(index + 1);
-        // }, 200);
     });
 }
 
 
-document.querySelector("button#runBtn").addEventListener("click", () => {
+const [pauseBtn, runBtn] = document.querySelectorAll("button");
+
+runBtn.addEventListener("click", () => {
     STATE.pause = false;
-    runOpIfPossible(0);
-    runOpIfPossible(1);
-    runOpIfPossible(2);
-    runOpIfPossible(3);
-    runOpIfPossible(4);
-    runOpIfPossible(5);
-    runOpIfPossible(6);
-    runOpIfPossible(7);
+    ops.forEach((_, index) => {
+        runOpIfPossible(index);
+    });
+    runBtn.setAttribute("disabled", true);
+    pauseBtn.removeAttribute("disabled");
 });
 
-document.querySelector("button#pauseBtn").addEventListener("click", () => {
+pauseBtn.addEventListener("click", () => {
     STATE.pause = true;
-});
+    pauseBtn.setAttribute("disabled", true);
+    runBtn.removeAttribute("disabled");
 
+});
+window.BASE.b0 = pauseBtn;
 // function getNextStore(thisIndex) {
 //     return
 // }

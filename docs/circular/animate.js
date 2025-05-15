@@ -35,8 +35,8 @@ export function animateCircleTranslate(view) {
 }
 
 function defaultCB(x1, y1) {
-    const cx = 50 + Math.round(x1 * 40);
-    const cy = 50 + Math.round(y1 * 40);
+    const cx = 75 + Math.round(x1 * 60);
+    const cy = 75 + Math.round(y1 * 60);
     return {cx, cy};
 }
 
